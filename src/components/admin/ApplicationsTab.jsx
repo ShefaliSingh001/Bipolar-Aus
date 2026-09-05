@@ -5,6 +5,8 @@ import StatusPill from "@/components/brand/StatusPill";
 export default function ApplicationsTab() {
   const [apps, setApps] = useState([]);
   const [openId, setOpenId] = useState(null);
+  const [sending, setSending] = useState(null);
+  const [notice, setNotice] = useState(null);
 
   const load = async () => setApps(await base44.entities.Application.list("-created_date"));
   useEffect(() => { load(); }, []);
@@ -16,6 +18,16 @@ export default function ApplicationsTab() {
     }
     if (status === "accepted" && app.role_id) {
       await base44.entities.JobRole.update(app.role_id, { status: "closed" });
+    }
+    if (status === "accepted") {
+      setSending(app.id);
+      try {
+        await base44.functions.invoke("sendShiftApprovalEmail", { application_id: app.id });
+        setNotice({ id: app.id, text: `Approval email sent to ${app.volunteer_email || "the volunteer"}.` });
+      } catch (e) {
+        setNotice({ id: app.id, text: "Approved, but the approval email could not be sent." });
+      }
+      setSending(null);
     }
     load();
   };
@@ -55,10 +67,13 @@ export default function ApplicationsTab() {
                   <div className="mt-5 flex flex-wrap gap-2">{a.matched_skills.map((s) => <span key={s} className="ba-status-pill">{s}</span>)}</div>
                 )}
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <button className="ba-btn-primary py-2" onClick={() => decide(a, "accepted")}>Accept</button>
+                  <button className="ba-btn-primary py-2" disabled={sending === a.id} onClick={() => decide(a, "accepted")}>
+                    {sending === a.id ? "Sending email…" : "Accept"}
+                  </button>
                   <button className="ba-btn-secondary py-2" onClick={() => decide(a, "reviewing")}>Mark reviewing</button>
                   <button className="brand-btn-destructive" onClick={() => decide(a, "rejected")}>Reject</button>
                 </div>
+                {notice?.id === a.id && <p className="mt-4 text-sm text-muted-foreground">{notice.text}</p>}
               </div>
             )}
           </div>
