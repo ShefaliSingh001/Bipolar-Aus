@@ -1,36 +1,28 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
+const pillars = [
+  { title: "Community support", note: "Peer-led groups and one-to-one connection for people living with bipolar and the families around them." },
+  { title: "Education", note: "Plain-language information and training for volunteers, carers and workplaces." },
+  { title: "Lived experience", note: "Nothing we do is designed without the people who live it. Your story is expertise here." },
+  { title: "Collaboration", note: "We work alongside clinicians, services and researchers to improve the care people actually receive." },
+];
 
 export default function WhyBipolarAustralia() {
   return (
-    <section className="mx-auto max-w-6xl px-6 py-24">
-      <div className="grid gap-14 md:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">About us</p>
-          <h2 className="font-heading text-3xl leading-tight md:text-[40px]">
-            Built by people with lived experience.
-          </h2>
-        </div>
-        <div className="space-y-6 text-[16px] leading-relaxed text-muted-foreground">
-          <p>
-            Bipolar Australia exists because recovery happens in company. Our groups are run by people
-            who have been through it, alongside volunteers who simply decided to show up.
-          </p>
-          <p>
-            Volunteer Connect is how we organise that: you tell us the hours you actually have and what
-            you're good at, and we match you to the role where it will land hardest. No forms in triplicate.
-          </p>
-          <p className="text-foreground">
-            And because making things together is its own kind of medicine, every volunteer can join the{" "}
-            <Link to="/studio" className="text-primary underline decoration-primary/30 underline-offset-4">
-              collaborative Studio
-            </Link>{" "}
-            — co-creating artworks with community members and publishing them onto our{" "}
-            <Link to="/explore" className="text-primary underline decoration-primary/30 underline-offset-4">
-              illustrated map of Sydney
-            </Link>.
-          </p>
-        </div>
+    <section id="about" className="mx-auto max-w-6xl px-6 py-24">
+      <h2 className="font-heading text-3xl leading-tight md:text-[44px]">Why Bipolar Australia</h2>
+      <p className="mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
+        We are Australia's national peak not-for-profit organisation for bipolar disorder — independent,
+        lived-experience led, and trusted by the people and services we work with.
+      </p>
+
+      <div className="mt-12 border-t border-border">
+        {pillars.map((p) => (
+          <div key={p.title} className="grid gap-2 border-b border-border py-7 md:grid-cols-[0.35fr_1fr] md:gap-10">
+            <h3 className="font-body text-[15px] font-medium text-foreground">{p.title}</h3>
+            <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground">{p.note}</p>
+          </div>
+        ))}
       </div>
     </section>
   );

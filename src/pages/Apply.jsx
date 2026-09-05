@@ -5,7 +5,8 @@ import PageHeader from "@/components/brand/PageHeader";
 import SkillChips from "@/components/apply/SkillChips";
 import AvailabilityPicker from "@/components/apply/AvailabilityPicker";
 import { volunteerSkills } from "@/lib/creativeSkills";
-import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 
 const STEPS = ["About you", "Your skills", "Your availability"];
 
@@ -93,18 +94,20 @@ export default function Apply() {
 
   return (
     <div className="min-h-screen">
-      <PageHeader
-        eyebrow="Volunteer with us"
-        title="Three short steps."
-        description="Tell us who you are, what you're good at, and when you're actually free. We'll do the matching."
-      />
-      <main className="mx-auto max-w-3xl px-6 py-14">
-        <div className="mb-12 flex items-center gap-4">
+      <header className="border-b border-border">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
+            <ArrowLeft className="h-4 w-4" /> Back to home
+          </Link>
+          <span className="text-sm text-muted-foreground">Volunteer registration</span>
+        </div>
+      </header>
+      <main className="mx-auto max-w-3xl px-6 py-16">
+        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-secondary">Step {step + 1} of 3</p>
+        <h1 className="font-heading text-[34px] leading-tight md:text-[44px]">{STEPS[step]}</h1>
+        <div className="mb-14 mt-7 flex gap-4">
           {STEPS.map((s, i) => (
-            <div key={s} className="flex items-center gap-3">
-              <span className={`text-sm ${i === step ? "text-primary" : "text-muted-foreground"}`}>{s}</span>
-              {i < STEPS.length - 1 && <span className="h-px w-8 bg-border" />}
-            </div>
+            <span key={s} className={`h-px flex-1 ${i <= step ? "bg-primary" : "bg-border"}`} />
           ))}
         </div>
 
@@ -119,15 +122,16 @@ export default function Apply() {
             {step === 0 && (
               <div className="space-y-6">
                 {[
-                  { k: "name", label: "Full name", type: "text" },
-                  { k: "email_id", label: "Email", type: "email" },
-                  { k: "phone", label: "Phone (optional)", type: "tel" },
-                  { k: "preferred_area", label: "Preferred area or suburb (optional)", type: "text" },
+                  { k: "name", label: "Full name *", type: "text", ph: "Your full name" },
+                  { k: "email_id", label: "Email *", type: "email", ph: "your@email.com" },
+                  { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx" },
+                  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney" },
                 ].map((f) => (
                   <div key={f.k}>
-                    <label className="mb-2 block text-sm text-muted-foreground">{f.label}</label>
+                    <label className="mb-2 block text-sm font-medium text-foreground">{f.label}</label>
                     <input
                       type={f.type}
+                      placeholder={f.ph}
                       value={form[f.k]}
                       onChange={(e) => set(f.k, e.target.value)}
                       className="w-full rounded-[var(--radius)] border border-border bg-card px-4 py-3 text-[15px] outline-none focus:border-primary/50"
@@ -168,13 +172,18 @@ export default function Apply() {
 
         {error && <p className="mt-6 text-sm text-destructive">{error}</p>}
 
-        <div className="mt-12 flex items-center gap-4">
-          {step > 0 && (
-            <button type="button" onClick={() => setStep(step - 1)} className="ba-btn-secondary">Back</button>
-          )}
+        <div className="mt-14 flex items-center justify-between border-t border-border pt-8">
+          <button
+            type="button"
+            onClick={() => setStep(Math.max(0, step - 1))}
+            disabled={step === 0}
+            className="ba-btn-secondary"
+          >
+            Back
+          </button>
           {step < 2 ? (
             <button type="button" disabled={!canContinue} onClick={() => setStep(step + 1)} className="ba-btn-primary">
-              Continue
+              Continue <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
             <button type="button" disabled={!canContinue || submitting} onClick={submit} className="ba-btn-primary">

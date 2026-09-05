@@ -1,31 +1,22 @@
 import React from "react";
 
-const outcomes = [
-  { figure: "1 in 50", label: "Australians live with bipolar disorder", note: "Around half a million people, and the families beside them." },
-  { figure: "16 yrs", label: "Supporting people since 2009", note: "Peer support groups, education and advocacy across the country." },
-  { figure: "40+", label: "Peer support groups nationally", note: "Facilitated by trained volunteers with lived experience." },
-  { figure: "9 in 10", label: "Attendees feel less alone", note: "Reported after their first peer support session." },
+const facts = [
+  { figure: "568,000", note: "Australians live with bipolar disorder — about 1 in 50 people." },
+  { figure: "13 years", note: "is how long people wait, on average, before a correct diagnosis." },
+  { figure: "1–2 hours", note: "a fortnight is genuinely enough to change someone's week." },
 ];
 
 export default function ImpactEditorial() {
   return (
-    <section className="border-y border-border bg-muted/40">
-      <div className="mx-auto max-w-6xl px-6 py-20">
-        <div className="max-w-xl">
-          <p className="mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Why it matters</p>
-          <h2 className="font-heading text-3xl leading-tight md:text-[40px]">
-            The work is quiet, steady and it changes lives.
-          </h2>
-        </div>
-        <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {outcomes.map((o) => (
-            <div key={o.label} className="brand-statcard">
-              <p className="font-heading text-[42px] leading-none text-primary">{o.figure}</p>
-              <p className="mt-4 text-[15px] leading-snug text-foreground">{o.label}</p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{o.note}</p>
-            </div>
-          ))}
-        </div>
+    <section className="mx-auto max-w-6xl px-6 py-20">
+      <h2 className="font-heading text-3xl leading-tight md:text-[40px]">Why your contribution matters</h2>
+      <div className="mt-10 border-t border-border">
+        {facts.map((f) => (
+          <div key={f.figure} className="grid items-center gap-3 border-b border-border py-9 md:grid-cols-[0.4fr_1fr] md:gap-10">
+            <p className="font-heading text-[40px] leading-none text-primary md:text-[52px]">{f.figure}</p>
+            <p className="max-w-lg text-[15px] leading-relaxed text-muted-foreground">{f.note}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
