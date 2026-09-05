@@ -1,53 +1,89 @@
-import React from "react";
-import { Pencil, Square, Circle, Type, Image as ImageIcon, Undo2, Save } from "lucide-react";
+import { useRef } from "react";
 
-const COLORS = ["#1A1A1A", "#0A7A3A", "#3CB371", "#FFD84D", "#D6635C", "#FFFFFF"];
 const TOOLS = [
-  { key: "pen", icon: Pencil, label: "Draw" },
-  { key: "rect", icon: Square, label: "Rectangle" },
-  { key: "circle", icon: Circle, label: "Circle" },
-  { key: "text", icon: Type, label: "Text" },
+  { id: "brush", label: "Brush" },
+  { id: "eraser", label: "Eraser" },
+  { id: "text", label: "Text" },
+  { id: "rect", label: "Square" },
+  { id: "circle", label: "Circle" },
+  { id: "sticker", label: "Sticker" },
+  { id: "cube", label: "3D object" },
 ];
 
-export default function CanvasToolbar({ tool, setTool, color, setColor, size, setSize, onUndo, onSave, onUpload, uploading, saving }) {
+const COLORS = ["#1A1A1A", "#0A7A3A", "#3CB371", "#FFD84D", "#FF0000", "#D6635C", "#4A6FE3", "#A855F7", "#FFFFFF"];
+const STICKERS = ["✨", "🌱", "🌈", "💛", "🕊️", "🌙", "🔥", "🫶"];
+
+const PILL = "rounded-full px-3.5 py-1.5 text-xs transition-colors ";
+
+export default function CanvasToolbar({ tool, setTool, color, setColor, size, setSize, sticker, setSticker, onUploadImage, uploading }) {
+  const fileRef = useRef(null);
+
+  const pick = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    onUploadImage(file);
+    e.target.value = "";
+  };
+
   return (
-    <div className="flex flex-wrap items-center gap-3 border-b border-border pb-4">
-      {TOOLS.map((t) => (
+    <div className="space-y-5 border-b border-border pb-6">
+      <div className="flex flex-wrap gap-2">
+        {TOOLS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTool(t.id)}
+            className={
+              PILL + "border " +
+              (tool === t.id
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:border-muted-foreground")
+            }
+          >
+            {t.label}
+          </button>
+        ))}
         <button
-          key={t.key}
-          type="button"
-          title={t.label}
-          onClick={() => setTool(t.key)}
-          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${tool === t.key ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"}`}
+          onClick={() => fileRef.current?.click()}
+          className={PILL + "border border-border bg-card text-muted-foreground hover:border-muted-foreground"}
         >
-          <t.icon className="h-4 w-4" />
+          {uploading ? "Uploading…" : "Upload image"}
         </button>
-      ))}
+        <input ref={fileRef} type="file" accept="image/*" onChange={pick} className="hidden" />
+      </div>
 
-      <span className="mx-1 h-6 w-px bg-border" />
+      <div className="flex flex-wrap items-center gap-5">
+        <div className="flex items-center gap-2">
+          {COLORS.map((c) => (
+            <button
+              key={c}
+              onClick={() => setColor(c)}
+              aria-label={c}
+              title={c}
+              aria-pressed={color === c}
+              className={`h-7 w-7 rounded-full border transition-transform ${color === c ? "scale-110 border-foreground" : "border-border"}`}
+              style={{ background: c }}
+            />
+          ))}
+        </div>
+        <label className="flex items-center gap-3 text-sm text-muted-foreground">
+          Size
+          <input type="range" min="2" max="48" value={size} onChange={(e) => setSize(Number(e.target.value))} className="accent-primary" />
+        </label>
+      </div>
 
-      {COLORS.map((c) => (
-        <button
-          key={c}
-          type="button"
-          onClick={() => setColor(c)}
-          className={`h-6 w-6 rounded-full border-2 ${color === c ? "border-primary" : "border-border"}`}
-          style={{ backgroundColor: c }}
-          aria-label={`Colour ${c}`}
-        />
-      ))}
-
-      <input type="range" min="1" max="24" value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-24 accent-primary" />
-
-      <span className="mx-1 h-6 w-px bg-border" />
-
-      <label className="ba-btn-secondary cursor-pointer py-2">
-        <ImageIcon className="h-4 w-4" />
-        {uploading ? "Uploading…" : "Image"}
-        <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
-      </label>
-      <button type="button" onClick={onUndo} className="ba-btn-secondary py-2"><Undo2 className="h-4 w-4" /> Undo</button>
-      <button type="button" onClick={onSave} disabled={saving} className="ba-btn-primary py-2"><Save className="h-4 w-4" /> {saving ? "Saving…" : "Save canvas"}</button>
+      {tool === "sticker" && (
+        <div className="flex flex-wrap gap-2">
+          {STICKERS.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSticker(s)}
+              className={`h-10 w-10 rounded-full border text-lg ${sticker === s ? "border-primary bg-muted" : "border-border bg-card"}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { base44 } from "@/api/base44Client";
 import StudioNav from "@/components/studio/StudioNav";
 import PageHeader from "@/components/brand/PageHeader";
 import StatusPill from "@/components/brand/StatusPill";
-import CanvasBoard from "@/components/studio/CanvasBoard";
+import CanvasStudio from "@/components/studio/CanvasStudio";
+import { mergeCanvas, waitForCanvasSaves } from "@/components/studio/canvasPersistence";
 import CollaboratorsPanel from "@/components/studio/CollaboratorsPanel";
 import ContributionTimeline from "@/components/studio/ContributionTimeline";
 import CommentsPanel from "@/components/studio/CommentsPanel";
@@ -20,12 +21,16 @@ export default function ProjectRoom() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
+    await waitForCanvasSaves(id);
     const [p, c, cm] = await Promise.all([
       base44.entities.ArtProject.get(id),
       base44.entities.Contribution.filter({ project_id: id }, "-created_date"),
       base44.entities.ArtComment.filter({ project_id: id }, "-created_date"),
     ]);
-    setProject(p);
+    setProject((current) => ({
+      ...p,
+      canvas: mergeCanvas(p.canvas, current?.id === id ? current.canvas : {}),
+    }));
     setContributions(c);
     setComments(cm);
     setLoading(false);
@@ -77,17 +82,28 @@ export default function ProjectRoom() {
   };
 
   const publish = async (landmarkId) => {
+    await waitForCanvasSaves(project.id);
+    let preview_url = project.preview_url;
+    const el = document.querySelector("canvas");
+    if (el) {
+      const blob = await new Promise((r) => el.toBlob(r, "image/png"));
+      if (blob) {
+        const file = new File([blob], `${project.title || "artwork"}.png`, { type: "image/png" });
+        preview_url = (await base44.integrations.Core.UploadFile({ file })).file_url;
+      }
+    }
     await base44.entities.Creation.create({
       title: project.title,
       landmark: landmarkId,
       creator_name: project.creator_name,
       type: "artwork",
       description: project.story,
-      image_url: project.preview_url,
+      image_url: preview_url,
       project_id: project.id,
     });
     await base44.entities.ArtProject.update(project.id, {
       stage: "published",
+      preview_url,
       explore_landmark: landmarkId,
       published_at: new Date().toISOString(),
       reach_count: (project.reach_count || 0) + 1,
@@ -105,6 +121,10 @@ export default function ProjectRoom() {
       </div>
     );
   }
+
+  const isCreator = !!user?.email && project.creator_email === user.email;
+  const isCollaborator = (project.collaborators || []).some((c) => c.email && c.email === user?.email);
+  const canEdit = project.stage !== "published" && (isCreator || isCollaborator);
 
   return (
     <div className="min-h-screen">
@@ -135,7 +155,12 @@ export default function ProjectRoom() {
 
         <div className="mt-12 grid gap-14 lg:grid-cols-[1.6fr_1fr]">
           <div className="space-y-16">
-            <CanvasBoard project={project} onSaved={load} />
+            <CanvasStudio
+              project={project}
+              setProject={setProject}
+              authorName={user?.full_name || user?.email || "Community member"}
+              canEdit={canEdit}
+            />
             <ContributionTimeline contributions={contributions} onLog={logContribution} />
             <CommentsPanel comments={comments} onAdd={addComment} />
           </div>
