@@ -7,9 +7,9 @@ export default function BrandLogo({ className = "" }) {
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[13px] font-medium text-primary-foreground transition-transform duration-300 group-hover:scale-105">
         BA
       </span>
-      <span className="font-heading text-[17px] leading-none text-foreground">
+      <span className="font-heading text-[17px] leading-none text-foreground hidden">
         Bipolar Australia
       </span>
-    </Link>
-  );
+    </Link>);
+
 }
