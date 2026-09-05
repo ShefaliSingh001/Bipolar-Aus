@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import BrandLogo from "@/components/brand/BrandLogo";
 import AdminLoginForm from "@/components/adminAuth/AdminLoginForm";
-import AdminSignupForm from "@/components/adminAuth/AdminSignupForm";
 
 export default function AdminAuth() {
-  const [mode, setMode] = useState("login");
   const navigate = useNavigate();
 
   const onSuccess = (admin) => {
@@ -27,26 +25,19 @@ export default function AdminAuth() {
 
       <main className="mx-auto max-w-md px-6 py-20">
         <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">Admin access</p>
-        <h1 className="font-heading text-[34px] leading-tight">
-          {mode === "login" ? "Welcome back." : "Create your admin account."}
-        </h1>
+        <h1 className="font-heading text-[34px] leading-tight">Welcome back.</h1>
         <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-          {mode === "login"
-            ? "Sign in with the email and password you registered with."
-            : "Tell us your details and choose a password to manage volunteers and roles."}
+          Sign in with the email and password you were given. Admin accounts are created by an existing
+          administrator — there's no public sign-up.
         </p>
 
         <div className="mt-10">
-          {mode === "login" ? <AdminLoginForm onSuccess={onSuccess} /> : <AdminSignupForm onSuccess={onSuccess} />}
+          <AdminLoginForm onSuccess={onSuccess} />
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="mt-8 text-sm text-muted-foreground transition-colors hover:text-primary"
-        >
-          {mode === "login" ? "Need an account? Sign up" : "Already registered? Sign in"}
-        </button>
+        <p className="mt-8 text-sm text-muted-foreground">
+          Need access? Ask an existing administrator to set up an account for you.
+        </p>
       </main>
     </div>
   );
