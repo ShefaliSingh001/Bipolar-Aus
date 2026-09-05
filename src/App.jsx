@@ -15,6 +15,7 @@ import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
 import Apply from '@/pages/Apply';
 import AdminDashboard from '@/pages/AdminDashboard';
+import AdminAuth from '@/pages/AdminAuth';
 import Explore from '@/pages/Explore';
 import VolunteerPortal from '@/pages/VolunteerPortal';
 import Community from '@/pages/Community';
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         <Route path="/apply" element={<Apply />} />
         <Route path="/volunteer" element={<Apply />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin-auth" element={<AdminAuth />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/portal" element={<VolunteerPortal />} />
         <Route path="/community" element={<Community />} />
