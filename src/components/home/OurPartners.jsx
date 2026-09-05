@@ -1,17 +1,6 @@
 import React from "react";
 
-const partners = [
-  "Ross Hutchison Foundation",
-  "Ryde Eastwood Leagues",
-  "Star Discount Chemist",
-  "The Athlete's Foot",
-  "Thrive Broking",
-  "Verve",
-  "Woolworths",
-  "Ashdale & Co",
-  "An Odd Grey Creative",
-  "Department of Health",
-];
+const PARTNER_LOGOS = "https://media.base44.com/images/public/6a9c05381c3844400beebe23/805085ea9_image.png";
 
 export default function OurPartners() {
   return (
@@ -22,18 +11,13 @@ export default function OurPartners() {
           Supporters, funders and community organisations who make this work possible.
         </p>
       </div>
-      <div className="ba-marquee">
-        <div className="ba-marquee-track">
-          {[...partners, ...partners].map((p, i) => (
-            <span
-              key={p + i}
-              className="whitespace-nowrap font-heading text-[20px] text-muted-foreground/75"
-              style={{ mixBlendMode: "multiply" }}
-            >
-              {p}
-            </span>
-          ))}
-        </div>
+      <div className="mx-auto max-w-5xl px-6">
+        <img
+          src={PARTNER_LOGOS}
+          alt="Logos of our partner organisations"
+          className="w-full"
+          style={{ mixBlendMode: "multiply" }}
+        />
       </div>
     </section>
   );
