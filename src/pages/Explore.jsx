@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
-import Sydney3DMap from "@/components/explore/Sydney3DMap";
+import SydneyMap from "@/components/explore/SydneyMap";
 import LandmarkInfoCard from "@/components/explore/LandmarkInfoCard";
 import CreationList from "@/components/explore/CreationList";
 import AddCreationForm from "@/components/explore/AddCreationForm";
@@ -27,7 +27,7 @@ export default function Explore() {
         description="Tap a place on the map to see the artworks, stories, photos and poems our community has made there — and add your own."
       />
       <main className="mx-auto max-w-6xl px-6 py-14">
-        <Sydney3DMap
+        <SydneyMap
           landmarks={map.landmarks}
           selectedId={map.selectedId}
           hoveredId={map.hoveredId}
