@@ -3,14 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import StudioNav from "@/components/studio/StudioNav";
 import PageHeader from "@/components/brand/PageHeader";
-import StatusPill from "@/components/brand/StatusPill";
 import CanvasStudio from "@/components/studio/CanvasStudio";
 import { mergeCanvas, waitForCanvasSaves } from "@/components/studio/canvasPersistence";
 import CollaboratorsPanel from "@/components/studio/CollaboratorsPanel";
 import ContributionTimeline from "@/components/studio/ContributionTimeline";
 import CommentsPanel from "@/components/studio/CommentsPanel";
-import PublishToExplore from "@/components/studio/PublishToExplore";
-import ProgressBar, { STAGES } from "@/components/studio/ProgressBar";
+import ProjectRoomStatus from "@/components/studio/ProjectRoomStatus";
 
 export default function ProjectRoom() {
   const { id } = useParams();
@@ -130,37 +128,33 @@ export default function ProjectRoom() {
     <div className="min-h-screen">
       <StudioNav />
       <PageHeader
-        eyebrow="Project room"
+        eyebrow={project.stage || "idea"}
         title={project.title}
-        description={project.story}
+        description={
+          <>
+            <span className="block text-foreground">Started by {project.creator_name}</span>
+            {project.story && <span className="mt-4 block">{project.story}</span>}
+            {!!(project.skills_wanted || []).length && (
+              <span className="mt-3 block text-secondary">
+                {project.creator_name} is looking for someone with {project.skills_wanted.join(", ")} skills.
+              </span>
+            )}
+          </>
+        }
         backTo="/studio"
-        backLabel="Back to Studio"
-        actions={<StatusPill status={project.stage} />}
+        backLabel="Back to collaborations"
+        actions={<ProjectRoomStatus project={project} onStage={setStage} onPublish={publish} />}
       />
       <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="max-w-md">
-          <ProgressBar stage={project.stage || "idea"} />
-          <div className="mt-4 flex flex-wrap gap-2">
-            {STAGES.filter((s) => s !== "published").map((s) => (
-              <button
-                key={s}
-                onClick={() => setStage(s)}
-                className={`rounded-full border px-3.5 py-1.5 text-xs capitalize transition-colors ${project.stage === s ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"}`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
+        <CanvasStudio
+          project={project}
+          setProject={setProject}
+          authorName={user?.full_name || user?.email || "Community member"}
+          canEdit={canEdit}
+        />
 
-        <div className="mt-12 grid gap-14 lg:grid-cols-[1.6fr_1fr]">
+        <div className="mt-16 grid gap-14 lg:grid-cols-[1.6fr_1fr]">
           <div className="space-y-16">
-            <CanvasStudio
-              project={project}
-              setProject={setProject}
-              authorName={user?.full_name || user?.email || "Community member"}
-              canEdit={canEdit}
-            />
             <ContributionTimeline contributions={contributions} onLog={logContribution} />
             <CommentsPanel comments={comments} onAdd={addComment} />
           </div>
@@ -174,7 +168,6 @@ export default function ProjectRoom() {
                 </div>
               </div>
             )}
-            <PublishToExplore project={project} onPublish={publish} />
           </aside>
         </div>
       </main>
