@@ -1,0 +1,36 @@
+{
+  "name": "JobRole",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "required_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hours_required": {
+      "type": "number"
+    },
+    "timings": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "filled",
+        "closed"
+      ],
+      "default": "open"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

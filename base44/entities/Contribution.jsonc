@@ -1,0 +1,32 @@
+{
+  "name": "Contribution",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "project_title": {
+      "type": "string"
+    },
+    "contributor_name": {
+      "type": "string"
+    },
+    "contributor_email": {
+      "type": "string"
+    },
+    "skill": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "project_id",
+    "contributor_name"
+  ]
+}

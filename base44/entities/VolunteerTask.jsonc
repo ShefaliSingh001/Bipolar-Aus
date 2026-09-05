@@ -1,0 +1,38 @@
+{
+  "name": "VolunteerTask",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "space_url": {
+      "type": "string"
+    },
+    "hours_logged": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "assigned",
+        "in_progress",
+        "completed"
+      ],
+      "default": "assigned"
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "title"
+  ]
+}

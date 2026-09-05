@@ -1,0 +1,92 @@
+{
+  "name": "ArtProject",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "story": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "creator_email": {
+      "type": "string"
+    },
+    "skills_wanted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "sketching",
+        "creating",
+        "review",
+        "published"
+      ],
+      "default": "idea"
+    },
+    "collaborators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "canvas": {
+      "type": "object",
+      "properties": {
+        "strokes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "preview_url": {
+      "type": "string"
+    },
+    "reach_count": {
+      "type": "number",
+      "default": 0
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "explore_landmark": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "creator_name"
+  ]
+}

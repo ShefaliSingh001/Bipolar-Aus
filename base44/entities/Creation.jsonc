@@ -1,0 +1,40 @@
+{
+  "name": "Creation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "landmark": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "artwork",
+        "story",
+        "photo",
+        "music",
+        "poem",
+        "other"
+      ],
+      "default": "artwork"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "landmark"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "ArtComment",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "comment",
+        "suggestion"
+      ],
+      "default": "comment"
+    }
+  },
+  "required": [
+    "project_id",
+    "author_name",
+    "text"
+  ]
+}

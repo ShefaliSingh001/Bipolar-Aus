@@ -1,0 +1,98 @@
+{
+  "name": "Volunteer",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email_id": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "weekdays",
+        "weekends",
+        "evenings",
+        "flexible"
+      ]
+    },
+    "available_days": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ]
+      }
+    },
+    "availability_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          },
+          "hours": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "available_time": {
+      "type": "string"
+    },
+    "total_weekly_hours": {
+      "type": "number"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "available_from": {
+      "type": "string"
+    },
+    "available_to": {
+      "type": "string"
+    },
+    "registered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "screening",
+        "active",
+        "inactive"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "name",
+    "email_id"
+  ]
+}

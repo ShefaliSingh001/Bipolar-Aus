@@ -1,0 +1,54 @@
+{
+  "name": "Application",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "volunteer_phone": {
+      "type": "string"
+    },
+    "role_id": {
+      "type": "string"
+    },
+    "role_title": {
+      "type": "string"
+    },
+    "matched_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "applied",
+        "reviewing",
+        "accepted",
+        "rejected",
+        "withdrawn"
+      ],
+      "default": "applied"
+    },
+    "preferred_area": {
+      "type": "string"
+    },
+    "applied_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hours_required": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "volunteer_id"
+  ]
+}

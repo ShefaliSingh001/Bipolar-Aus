@@ -1,0 +1,32 @@
+{
+  "name": "VolunteerOnboarding",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string"
+    },
+    "onboarding_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed"
+      ],
+      "default": "not_started"
+    },
+    "project": {
+      "type": "string"
+    },
+    "hours_worked": {
+      "type": "number",
+      "default": 0
+    },
+    "certificate_granted": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "volunteer_id"
+  ]
+}
