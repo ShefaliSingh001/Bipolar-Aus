@@ -57,7 +57,10 @@ export default async function(req) {
     msg.setSubject(`Your volunteer shift is approved — ${app.role_title || role?.title || 'Bipolar Australia'}`);
     msg.addMessage({ contentType: 'text/plain', data: lines.join('\n') });
 
-    const raw = btoa(msg.asRaw()).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const bytes = new TextEncoder().encode(msg.asRaw());
+    let binary = '';
+    for (const b of bytes) binary += String.fromCharCode(b);
+    const raw = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
     const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
       method: 'POST',
