@@ -4,7 +4,6 @@ import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
 import SkillChips from "@/components/apply/SkillChips";
 import AvailabilityPicker from "@/components/apply/AvailabilityPicker";
-import MatchResults from "@/components/apply/MatchResults";
 import { volunteerSkills } from "@/lib/creativeSkills";
 import { Loader2 } from "lucide-react";
 
@@ -85,12 +84,9 @@ export default function Apply() {
       <div className="min-h-screen">
         <PageHeader
           eyebrow="Thank you"
-          title="You're in. Here's where you fit."
-          description={`Thanks ${form.name.split(" ")[0]} — your details are with our volunteer team. These are the roles that matched your skills and the hours you gave us.`}
+          title="Thanks for applying!"
+          description="Your details are with our volunteer team. We'll be in touch soon."
         />
-        <main className="mx-auto max-w-4xl px-6 py-14">
-          <MatchResults matches={matches} />
-        </main>
       </div>
     );
   }
