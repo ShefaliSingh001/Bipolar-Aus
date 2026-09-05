@@ -14,6 +14,9 @@ export default function ApplicationsTab() {
     if (app.volunteer_id) {
       await base44.entities.Volunteer.update(app.volunteer_id, { status: status === "accepted" ? "active" : status === "rejected" ? "inactive" : "screening" });
     }
+    if (status === "accepted" && app.role_id) {
+      await base44.entities.JobRole.update(app.role_id, { status: "closed" });
+    }
     load();
   };
 
