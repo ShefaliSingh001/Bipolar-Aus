@@ -8,6 +8,7 @@ import OnboardingChecklist from "@/components/portal/OnboardingChecklist";
 import CertificateCard from "@/components/portal/CertificateCard";
 import ApprovalNotice from "@/components/portal/ApprovalNotice";
 import PortalLogin from "@/components/portal/PortalLogin";
+import signOut from "@/lib/signOut";
 
 export default function VolunteerPortal() {
   const [loading, setLoading] = useState(true);
@@ -74,7 +75,7 @@ export default function VolunteerPortal() {
         <PageHeader eyebrow="Volunteer portal" title="We can't find your volunteer profile yet." description={`We looked for a volunteer registered with ${user?.email}. Complete the short application and your portal will fill in.`} />
         <main className="mx-auto max-w-3xl px-6 py-14">
           <Link to="/apply" className="ba-btn-primary">Complete my application</Link>
-          <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary ml-3">
+          <button type="button" onClick={() => signOut("/portal")} className="ba-btn-secondary ml-3">
             Log out
           </button>
         </main>
@@ -95,7 +96,7 @@ export default function VolunteerPortal() {
             </span>
             <StatusPill status={volunteer.status} />
             {application && <StatusPill status={application.status} />}
-            <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary">
+            <button type="button" onClick={() => signOut("/portal")} className="ba-btn-secondary">
               Log out
             </button>
           </>
