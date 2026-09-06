@@ -13,8 +13,11 @@ export default function AdminLoginForm({ onSuccess }) {
     setError("");
     setLoading(true);
     try {
-      const matches = await base44.entities.Admin.filter({ email: email.trim().toLowerCase() });
-      const admin = matches.find((a) => a.password === password);
+      const wanted = email.trim().toLowerCase();
+      const all = await base44.entities.Admin.list();
+      const admin = all.find(
+        (a) => (a.email || "").trim().toLowerCase() === wanted && (a.password || "") === password.trim()
+      );
       if (!admin) {
         setError("Those details don't match an admin account.");
         return;
