@@ -20,8 +20,6 @@ export default function Apply() {
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
   const [availability, setAvailability] = useState("flexible");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState("");
@@ -43,33 +41,18 @@ export default function Apply() {
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleSkill = (s) => setSkills((p) => p.includes(s) ? p.filter((x) => x !== s) : [...p, s]);
 
-  const accountReady = !needsAccount || (password.length >= 8 && password === confirmPassword);
-
   const canContinue =
-  step === 0 ? form.name.trim() && form.email_id.trim() && accountReady : step === 1 ? skills.length > 0 : slots.length > 0;
+  step === 0 ? form.name.trim() && form.email_id.trim() : step === 1 ? skills.length > 0 : slots.length > 0;
 
   const aboutFields = [
   { k: "name", label: "Full name *", type: "text", ph: "Your full name", value: form.name, onChange: (v) => set("name", v) },
   { k: "email_id", label: "Email *", type: "email", ph: "your@email.com", value: form.email_id, onChange: (v) => set("email_id", v) },
-  { k: "password", label: "Password *", type: "password", ph: "At least 8 characters", value: password, onChange: setPassword },
-  { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword },
   { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
-  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }].
-  filter((f) => needsAccount || f.type !== "password");
+  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }];
 
   const submit = async () => {
     setSubmitting(true);
     setError("");
-
-    if (needsAccount) {
-      try {
-        await base44.auth.register({ email: form.email_id.trim(), password });
-      } catch (e) {
-        setError(e?.message || "We couldn't create your account with that email.");
-        setSubmitting(false);
-        return;
-      }
-    }
 
     const totalHours = Math.round(slots.reduce((s, x) => s + (x.hours || 0), 0) * 10) / 10;
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Australia/Sydney";
@@ -187,11 +170,6 @@ export default function Apply() {
                     fileName={resume.name}
                     onChange={(url, name) => setResume({ url, name })} />
 
-                    {needsAccount &&
-                  <p className="text-sm text-muted-foreground">
-                        You'll use this email and password to sign in to your volunteer portal.
-                      </p>
-                  }
                   </div>
                 }
 
