@@ -13,8 +13,28 @@ export default function Explore() {
 
   const load = useCallback(async () => {
     if (!map.selectedId) { setCreations([]); return; }
-    const rows = await base44.entities.Creation.filter({ landmark: map.selectedId }, "-created_date");
-    setCreations(rows);
+    const [rows, projects] = await Promise.all([
+      base44.entities.Creation.filter({ landmark: map.selectedId }, "-created_date"),
+      base44.entities.ArtProject.filter({ explore_landmark: map.selectedId }, "-created_date"),
+    ]);
+    const covered = new Set(rows.map((r) => r.project_id).filter(Boolean));
+    const fromProjects = projects
+      .filter((p) => !covered.has(p.id))
+      .map((p) => ({
+        id: `project-${p.id}`,
+        title: p.title,
+        creator_name: p.creator_name,
+        type: "artwork",
+        description: p.story,
+        image_url: p.preview_url,
+        project_id: p.id,
+        created_date: p.published_at || p.created_date,
+      }));
+    setCreations(
+      [...rows, ...fromProjects].sort(
+        (a, b) => new Date(b.created_date || 0) - new Date(a.created_date || 0)
+      )
+    );
   }, [map.selectedId]);
 
   useEffect(() => { load(); }, [load]);
