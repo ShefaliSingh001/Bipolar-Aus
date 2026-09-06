@@ -103,7 +103,7 @@ export default function Apply() {
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-6 py-16">
-        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-secondary hidden">Step {step + 1} of 3</p>
+        
         <h1 className="font-heading text-[34px] leading-tight md:text-[44px]">{STEPS[step]}</h1>
         <div className="mb-14 mt-7 flex gap-4">
           {STEPS.map((s, i) =>
