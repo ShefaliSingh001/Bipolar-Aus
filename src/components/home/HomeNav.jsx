@@ -23,7 +23,7 @@ export default function HomeNav() {
           <Link to="/studio" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Art Studio</Link>
           <Link to="/explore" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Explore</Link>
           <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">My portal</Link>
-          <Link to="/admin-auth" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Admin sign in</Link>
+          <Link to="/admin-auth" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Admin portal</Link>
           {email && (
             <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary lg:block">
               Signed in as <span className="text-foreground">{email}</span>
