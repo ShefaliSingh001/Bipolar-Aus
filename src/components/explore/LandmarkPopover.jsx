@@ -34,18 +34,18 @@ export default function LandmarkPopover({ landmark, creations, onClose }) {
           creations.map((c) => (
             <article key={c.id} className="border-t border-border py-5">
               {c.image_url && (
-                <div className="mb-3 h-24 w-full overflow-hidden rounded-[var(--radius)] bg-muted">
-                  <Image src={c.image_url} alt={c.title} className="h-24 w-full" fittingType="fit" />
+                <div className="mb-5 h-40 w-full overflow-hidden rounded-[var(--radius)] bg-white">
+                  <Image src={c.image_url} alt={c.title} className="h-40 w-full" fittingType="fit" />
                 </div>
               )}
-              <h4 className="font-heading text-lg leading-tight">{c.title}</h4>
+              <h4 className="font-heading text-xl leading-tight">{c.title}</h4>
               {c.creator_name && (
-                <p className="mt-0.5 text-sm text-muted-foreground">by {c.creator_name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">by {c.creator_name}</p>
               )}
               {c.description && (
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{c.description}</p>
               )}
-              <div className="mt-2 flex flex-wrap items-center gap-3">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
                 <StatusPill tone="quiet">{c.type}</StatusPill>
                 {c.project_id && (
                   <Link to={`/studio/${c.project_id}`} className="text-sm text-primary underline underline-offset-4">
