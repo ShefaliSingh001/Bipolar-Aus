@@ -35,7 +35,7 @@ export default function VolunteerTopMatches({ volunteer, matches, adminName, onC
       )
     );
     await base44.entities.Volunteer.update(volunteer.id, { status: "active" });
-    await base44.entities.Application.create({
+    const application = await base44.entities.Application.create({
       volunteer_id: volunteer.id,
       volunteer_name: volunteer.name,
       volunteer_email: volunteer.email_id,
@@ -44,7 +44,13 @@ export default function VolunteerTopMatches({ volunteer, matches, adminName, onC
       role_title: match.job_role_title,
       status: "accepted",
       applied_date: new Date().toISOString(),
+      hours_required: match.hours_required,
     });
+    try {
+      await base44.functions.invoke("sendShiftApprovalEmail", { application_id: application.id });
+    } catch (e) {
+      setError("Approved, but the approval email could not be sent.");
+    }
     setBusy(null);
     await onChanged();
   };
