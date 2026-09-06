@@ -19,10 +19,8 @@ export default function HomeNav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <BrandLogo />
         <div className="flex items-center gap-7">
-          <Link to="/#about" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">About</Link>
           <Link to="/community" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Community</Link>
           <Link to="/studio" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Art Studio</Link>
-          <Link to="/explore" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Explore</Link>
           <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">My portal</Link>
           <Link to="/admin-auth" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Admin portal</Link>
           {email && (
