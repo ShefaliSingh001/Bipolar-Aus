@@ -1,6 +1,5 @@
 import React from "react";
-
-const PARTNER_LOGOS = "https://media.base44.com/images/public/6a9c05381c3844400beebe23/805085ea9_image.png";
+import PartnerMarquee from "@/components/home/PartnerMarquee";
 
 export default function OurPartners() {
   return (
@@ -11,14 +10,7 @@ export default function OurPartners() {
           Supporters, funders and community organisations who make this work possible.
         </p>
       </div>
-      <div className="mx-auto max-w-5xl px-6">
-        <img
-          src={PARTNER_LOGOS}
-          alt="Logos of our partner organisations"
-          className="w-full"
-          style={{ mixBlendMode: "multiply" }}
-        />
-      </div>
+      <PartnerMarquee />
     </section>
   );
 }
