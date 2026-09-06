@@ -18,7 +18,7 @@ export default function CreateProject() {
   const [skills, setSkills] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { base44.auth.me().then(setUser); }, []);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => setUser(null)); }, []);
 
   const submit = async (e) => {
     e.preventDefault();

@@ -63,14 +63,14 @@ const AuthenticatedApp = () => {
         <Route path="/admin-auth" element={<AdminAuth />} />
         <Route path="/volunteer" element={<Apply />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/studio" element={<Studio />} />
+        <Route path="/studio/create" element={<CreateProject />} />
+        <Route path="/studio/:id" element={<ProjectRoom />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/explore" element={<Explore />} />
-          <Route path="/studio" element={<Studio />} />
-          <Route path="/studio/create" element={<CreateProject />} />
           <Route path="/studio/impact" element={<MyImpact />} />
           <Route path="/studio/profile" element={<StudioProfile />} />
-          <Route path="/studio/:id" element={<ProjectRoom />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

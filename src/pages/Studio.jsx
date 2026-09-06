@@ -16,7 +16,7 @@ export default function Studio() {
 
   useEffect(() => {
     (async () => {
-      const me = await base44.auth.me();
+      const me = await base44.auth.me().catch(() => null);
       setMySkills(me?.creative_skills || []);
       setProjects(await base44.entities.ArtProject.list("-created_date"));
       setLoading(false);
