@@ -95,6 +95,7 @@
     -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
   .ba-marquee-track {
+    @apply bg-background;
     display: flex;
     width: max-content;
     align-items: center;
