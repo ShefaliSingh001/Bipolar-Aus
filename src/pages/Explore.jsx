@@ -2,27 +2,26 @@ import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
 import Sydney3DMap from "@/components/explore/Sydney3DMap";
-import LandmarkInfoCard from "@/components/explore/LandmarkInfoCard";
-import CreationList from "@/components/explore/CreationList";
+import LandmarkPopover from "@/components/explore/LandmarkPopover";
 import AddCreationForm from "@/components/explore/AddCreationForm";
 import useSydneyMap from "@/hooks/useSydneyMap";
 
 export default function Explore() {
   const map = useSydneyMap();
-  const [creations, setCreations] = useState([]);
+  const [all, setAll] = useState([]);
 
   const load = useCallback(async () => {
-    if (!map.selectedId) { setCreations([]); return; }
     const [rows, projects] = await Promise.all([
-      base44.entities.Creation.filter({ landmark: map.selectedId }, "-created_date"),
-      base44.entities.ArtProject.filter({ explore_landmark: map.selectedId }, "-created_date"),
+      base44.entities.Creation.list("-created_date"),
+      base44.entities.ArtProject.filter({ stage: "published" }, "-created_date"),
     ]);
     const covered = new Set(rows.map((r) => r.project_id).filter(Boolean));
     const fromProjects = projects
-      .filter((p) => !covered.has(p.id))
+      .filter((p) => p.explore_landmark && !covered.has(p.id))
       .map((p) => ({
         id: `project-${p.id}`,
         title: p.title,
+        landmark: p.explore_landmark,
         creator_name: p.creator_name,
         type: "artwork",
         description: p.story,
@@ -30,14 +29,20 @@ export default function Explore() {
         project_id: p.id,
         created_date: p.published_at || p.created_date,
       }));
-    setCreations(
+    setAll(
       [...rows, ...fromProjects].sort(
         (a, b) => new Date(b.created_date || 0) - new Date(a.created_date || 0)
       )
     );
-  }, [map.selectedId]);
+  }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const counts = all.reduce((acc, c) => {
+    acc[c.landmark] = (acc[c.landmark] || 0) + 1;
+    return acc;
+  }, {});
+  const selectedCreations = all.filter((c) => c.landmark === map.selectedId);
 
   return (
     <div className="min-h-screen">
@@ -53,26 +58,28 @@ export default function Explore() {
           hoveredId={map.hoveredId}
           setHoveredId={map.setHoveredId}
           onSelect={map.select}
+          counts={counts}
+          footer={
+            map.selected
+              ? `${selectedCreations.length} creation${selectedCreations.length === 1 ? "" : "s"} at ${map.selected.name}`
+              : "Choose a landmark name tag to see its community creations"
+          }
+          panel={
+            map.selected && (
+              <LandmarkPopover
+                landmark={map.selected}
+                creations={selectedCreations}
+                onClose={map.clear}
+              />
+            )
+          }
         />
 
-        <div className="mt-14">
-          {!map.selected ? (
-            <p className="text-[15px] leading-relaxed text-muted-foreground">
-              Choose a place above to begin.
-            </p>
-          ) : (
-            <>
-              <LandmarkInfoCard landmark={map.selected} count={creations.length} onClear={map.clear} />
-              <div className="mt-10 grid gap-12 lg:grid-cols-[1.5fr_1fr]">
-                <section>
-                  <h2 className="font-heading text-2xl">Creations at {map.selected.name}</h2>
-                  <CreationList creations={creations} />
-                </section>
-                <AddCreationForm landmarkId={map.selected.id} onAdded={load} />
-              </div>
-            </>
-          )}
-        </div>
+        {map.selected && (
+          <div className="mt-12 max-w-xl">
+            <AddCreationForm landmarkId={map.selected.id} onAdded={load} />
+          </div>
+        )}
       </main>
     </div>
   );
