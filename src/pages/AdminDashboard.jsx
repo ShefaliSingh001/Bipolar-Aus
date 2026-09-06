@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import PageHeader from "@/components/brand/PageHeader";
 import RolesTab from "@/components/admin/RolesTab";
 import ApplicationsTab from "@/components/admin/ApplicationsTab";
+import TopMatchesTab from "@/components/admin/TopMatchesTab";
 import TasksTab from "@/components/admin/TasksTab";
 import ImpactTab from "@/components/admin/ImpactTab";
 
 const TABS = [
   { key: "roles", label: "Roles" },
   { key: "applications", label: "Applications" },
+  { key: "matches", label: "Top Matches" },
   { key: "tasks", label: "Tasks" },
   { key: "impact", label: "Impact" },
 ];
@@ -37,6 +39,7 @@ export default function AdminDashboard() {
         <div className="pt-12">
           {tab === "roles" && <RolesTab />}
           {tab === "applications" && <ApplicationsTab />}
+          {tab === "matches" && <TopMatchesTab />}
           {tab === "tasks" && <TasksTab />}
           {tab === "impact" && <ImpactTab />}
         </div>
