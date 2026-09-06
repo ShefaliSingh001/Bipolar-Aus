@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import SiteLayout from '@/components/SiteLayout';
 // Add page imports here
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -55,20 +56,22 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/apply" element={<Apply />} />
-      <Route path="/portal" element={<VolunteerPortal />} />
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/volunteer" element={<Apply />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin-auth" element={<AdminAuth />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/studio" element={<Studio />} />
-        <Route path="/studio/create" element={<CreateProject />} />
-        <Route path="/studio/impact" element={<MyImpact />} />
-        <Route path="/studio/profile" element={<StudioProfile />} />
-        <Route path="/studio/:id" element={<ProjectRoom />} />
+      <Route element={<SiteLayout />}>
+        <Route path="/apply" element={<Apply />} />
+        <Route path="/portal" element={<VolunteerPortal />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/volunteer" element={<Apply />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin-auth" element={<AdminAuth />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/studio" element={<Studio />} />
+          <Route path="/studio/create" element={<CreateProject />} />
+          <Route path="/studio/impact" element={<MyImpact />} />
+          <Route path="/studio/profile" element={<StudioProfile />} />
+          <Route path="/studio/:id" element={<ProjectRoom />} />
+        </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

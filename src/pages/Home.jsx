@@ -1,5 +1,4 @@
 import React from "react";
-import HomeNav from "@/components/home/HomeNav";
 import Hero from "@/components/home/Hero";
 import ImpactEditorial from "@/components/home/ImpactEditorial";
 import WhyBipolarAustralia from "@/components/home/WhyBipolarAustralia";
@@ -10,7 +9,6 @@ import FinalCTA from "@/components/home/FinalCTA";
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <HomeNav />
       <Hero />
       <ImpactEditorial />
       <WhyBipolarAustralia />
