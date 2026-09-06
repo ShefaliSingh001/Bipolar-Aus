@@ -7,6 +7,7 @@ import AvailabilityPicker from "@/components/apply/AvailabilityPicker";
 import ResumeUpload from "@/components/apply/ResumeUpload";
 import StepRail from "@/components/apply/StepRail";
 import { volunteerSkills } from "@/lib/creativeSkills";
+import { setVolunteerSession } from "@/lib/volunteerSession";
 import { Link } from "react-router-dom";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 
@@ -26,14 +27,7 @@ export default function Apply() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(async (authed) => {
-      setNeedsAccount(!authed);
-      if (authed) {
-        const me = await base44.auth.me();
-        setForm((f) => ({ ...f, name: me?.full_name || f.name, email_id: me?.email || f.email_id }));
-        setStep(1);
-      }
-    });
+    setNeedsAccount(true);
   }, []);
 
   const STEPS = BASE_STEPS;
@@ -60,6 +54,8 @@ export default function Apply() {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Australia/Sydney";
     const payload = {
       ...form,
+      email_id: form.email_id.trim().toLowerCase(),
+      password: needsAccount ? password : undefined,
       resume: resume.url || undefined,
       skills,
       availability,
@@ -74,19 +70,6 @@ export default function Apply() {
       status: "new"
     };
 
-    if (needsAccount) {
-      try {
-        await base44.auth.register({ email: form.email_id.trim(), password });
-      } catch (e) {
-        const msg = String(e?.message || "");
-        if (!/already/i.test(msg)) {
-          setError(msg || "We couldn't create your account. Please try again.");
-          setSubmitting(false);
-          return;
-        }
-      }
-    }
-
     let result = { matches: [] };
     try {
       const res = await base44.functions.invoke("semanticMatchRoles", { volunteer: payload });
@@ -96,6 +79,7 @@ export default function Apply() {
     }
 
     const volunteer = await base44.entities.Volunteer.create(payload);
+    if (needsAccount) setVolunteerSession(volunteer);
     const best = (result.matches || [])[0];
     await base44.entities.Application.create({
       volunteer_id: volunteer.id,

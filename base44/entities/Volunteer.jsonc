@@ -8,6 +8,10 @@
     "email_id": {
       "type": "string"
     },
+    "password": {
+      "type": "string",
+      "description": "Password the volunteer created at registration, used for portal login"
+    },
     "phone": {
       "type": "string"
     },

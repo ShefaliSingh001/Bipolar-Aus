@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
+import { setVolunteerSession } from "@/lib/volunteerSession";
 import { Loader2 } from "lucide-react";
 
 export default function PortalLogin() {
@@ -14,13 +15,17 @@ export default function PortalLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    try {
-      await base44.auth.loginViaEmailPassword(email.trim(), password);
+    const matches = await base44.entities.Volunteer.filter({
+      email_id: email.trim().toLowerCase(),
+      password,
+    });
+    if (matches[0]) {
+      setVolunteerSession(matches[0]);
       window.location.href = "/portal";
-    } catch (err) {
-      setError(err.message || "That email and password didn't match.");
-      setLoading(false);
+      return;
     }
+    setError("That email and password didn't match.");
+    setLoading(false);
   };
 
   return (

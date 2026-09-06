@@ -8,7 +8,12 @@ import OnboardingChecklist from "@/components/portal/OnboardingChecklist";
 import CertificateCard from "@/components/portal/CertificateCard";
 import ApprovalNotice from "@/components/portal/ApprovalNotice";
 import PortalLogin from "@/components/portal/PortalLogin";
-import signOut from "@/lib/signOut";
+import { getVolunteerSession, clearVolunteerSession } from "@/lib/volunteerSession";
+
+const logOut = () => {
+  clearVolunteerSession();
+  window.location.href = "/portal";
+};
 
 export default function VolunteerPortal() {
   const [loading, setLoading] = useState(true);
@@ -21,14 +26,14 @@ export default function VolunteerPortal() {
   const [authed, setAuthed] = useState(true);
 
   const load = async () => {
-    if (!(await base44.auth.isAuthenticated())) {
+    const session = getVolunteerSession();
+    if (!session) {
       setAuthed(false);
       setLoading(false);
       return;
     }
-    const me = await base44.auth.me();
-    setUser(me);
-    const vols = await base44.entities.Volunteer.filter({ email_id: me.email });
+    setUser({ email: session.email });
+    const vols = await base44.entities.Volunteer.filter({ id: session.id });
     const v = vols[0] || null;
     setVolunteer(v);
     if (v) {
@@ -75,7 +80,7 @@ export default function VolunteerPortal() {
         <PageHeader eyebrow="Volunteer portal" title="We can't find your volunteer profile yet." description={`We looked for a volunteer registered with ${user?.email}. Complete the short application and your portal will fill in.`} />
         <main className="mx-auto max-w-3xl px-6 py-14">
           <Link to="/apply" className="ba-btn-primary">Complete my application</Link>
-          <button type="button" onClick={() => signOut("/portal")} className="ba-btn-secondary ml-3">
+          <button type="button" onClick={logOut} className="ba-btn-secondary ml-3">
             Log out
           </button>
         </main>
@@ -96,7 +101,7 @@ export default function VolunteerPortal() {
             </span>
             <StatusPill status={volunteer.status} />
             {application && <StatusPill status={application.status} />}
-            <button type="button" onClick={() => signOut("/portal")} className="ba-btn-secondary">
+            <button type="button" onClick={logOut} className="ba-btn-secondary">
               Log out
             </button>
           </>
