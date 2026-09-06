@@ -6,6 +6,8 @@ import StatusPill from "@/components/brand/StatusPill";
 import TaskCard from "@/components/portal/TaskCard";
 import OnboardingChecklist from "@/components/portal/OnboardingChecklist";
 import CertificateCard from "@/components/portal/CertificateCard";
+import ApprovalNotice from "@/components/portal/ApprovalNotice";
+import PortalLogin from "@/components/portal/PortalLogin";
 
 export default function VolunteerPortal() {
   const [loading, setLoading] = useState(true);
@@ -14,8 +16,15 @@ export default function VolunteerPortal() {
   const [application, setApplication] = useState(null);
   const [onboarding, setOnboarding] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [role, setRole] = useState(null);
+  const [authed, setAuthed] = useState(true);
 
   const load = async () => {
+    if (!(await base44.auth.isAuthenticated())) {
+      setAuthed(false);
+      setLoading(false);
+      return;
+    }
     const me = await base44.auth.me();
     setUser(me);
     const vols = await base44.entities.Volunteer.filter({ email_id: me.email });
@@ -30,6 +39,10 @@ export default function VolunteerPortal() {
       setApplication(apps[0] || null);
       setOnboarding(onb[0] || null);
       setTasks(tsk);
+      if (apps[0]?.role_id) {
+        const roles = await base44.entities.JobRole.filter({ id: apps[0].role_id });
+        setRole(roles[0] || null);
+      }
     }
     setLoading(false);
   };
@@ -53,12 +66,17 @@ export default function VolunteerPortal() {
     return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading your portal…</div>;
   }
 
+  if (!authed) return <PortalLogin />;
+
   if (!volunteer) {
     return (
       <div className="min-h-screen">
         <PageHeader eyebrow="Volunteer portal" title="We can't find your volunteer profile yet." description={`We looked for a volunteer registered with ${user?.email}. Complete the short application and your portal will fill in.`} />
         <main className="mx-auto max-w-3xl px-6 py-14">
           <Link to="/apply" className="ba-btn-primary">Complete my application</Link>
+          <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary ml-3">
+            Log out
+          </button>
         </main>
       </div>
     );
@@ -70,11 +88,27 @@ export default function VolunteerPortal() {
         eyebrow="Volunteer portal"
         title={`Welcome back, ${volunteer.name.split(" ")[0]}.`}
         description={application?.role_title ? `Matched role: ${application.role_title}` : "Your coordinator is finalising your role match."}
-        actions={<><StatusPill status={volunteer.status} />{application && <StatusPill status={application.status} />}</>}
+        actions={
+          <>
+            <span className="text-sm text-muted-foreground">
+              Signed in as <span className="text-foreground">{user?.email}</span>
+            </span>
+            <StatusPill status={volunteer.status} />
+            {application && <StatusPill status={application.status} />}
+            <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary">
+              Log out
+            </button>
+          </>
+        }
       />
       <main className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-16 lg:grid-cols-[1.4fr_1fr]">
           <section>
+            {application?.status === "accepted" && (
+              <div className="mb-14">
+                <ApprovalNotice application={application} volunteer={volunteer} role={role} />
+              </div>
+            )}
             <h2 className="font-heading text-2xl">Your tasks</h2>
             {tasks.length === 0 ? (
               <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">

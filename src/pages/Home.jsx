@@ -1,6 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import HomeNav from "@/components/home/HomeNav";
 import Hero from "@/components/home/Hero";
 import ImpactEditorial from "@/components/home/ImpactEditorial";
 import WhyBipolarAustralia from "@/components/home/WhyBipolarAustralia";
@@ -11,7 +9,6 @@ import FinalCTA from "@/components/home/FinalCTA";
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <HomeNav />
       <Hero />
       <ImpactEditorial />
       <WhyBipolarAustralia />
@@ -22,9 +19,6 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-6 text-sm text-muted-foreground">
           <p>Recovery is possible · Hope is real · Support is available · You are not alone</p>
           <p className="mt-2">If you need urgent support, call Lifeline on 13 11 14.</p>
-          <Link to="/admin-auth" className="ba-btn-secondary mt-6">
-            Admin sign in
-          </Link>
         </div>
       </footer>
     </div>

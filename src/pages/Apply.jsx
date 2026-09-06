@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
@@ -9,25 +9,54 @@ import StepRail from "@/components/apply/StepRail";
 import { volunteerSkills } from "@/lib/creativeSkills";
 import { Link } from "react-router-dom";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import AccountStep from "@/components/apply/AccountStep";
 
-const STEPS = ["About you", "Your skills", "Your availability"];
+const BASE_STEPS = ["About you", "Your skills", "Your availability"];
 
 export default function Apply() {
   const [step, setStep] = useState(0);
+  const [needsAccount, setNeedsAccount] = useState(false);
   const [form, setForm] = useState({ name: "", email_id: "", phone: "", preferred_area: "" });
   const [resume, setResume] = useState({ url: "", name: "" });
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
   const [availability, setAvailability] = useState("flexible");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(async (authed) => {
+      setNeedsAccount(!authed);
+      if (authed) {
+        const me = await base44.auth.me();
+        setForm((f) => ({ ...f, name: me?.full_name || f.name, email_id: me?.email || f.email_id }));
+        setStep(1);
+      }
+    });
+  }, []);
+
+  const STEPS = needsAccount ? [...BASE_STEPS, "Confirm your email"] : BASE_STEPS;
+  const lastStep = STEPS.length - 1;
+
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleSkill = (s) => setSkills((p) => p.includes(s) ? p.filter((x) => x !== s) : [...p, s]);
 
+  const accountReady = !needsAccount || (password.length >= 8 && password === confirmPassword);
+
   const canContinue =
-  step === 0 ? form.name.trim() && form.email_id.trim() : step === 1 ? skills.length > 0 : slots.length > 0;
+  step === 0 ? form.name.trim() && form.email_id.trim() && accountReady : step === 1 ? skills.length > 0 : slots.length > 0;
+
+  const aboutFields = [
+  { k: "name", label: "Full name *", type: "text", ph: "Your full name", value: form.name, onChange: (v) => set("name", v) },
+  { k: "email_id", label: "Email *", type: "email", ph: "your@email.com", value: form.email_id, onChange: (v) => set("email_id", v) },
+  { k: "password", label: "Password *", type: "password", ph: "At least 8 characters", value: password, onChange: setPassword },
+  { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword },
+  { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
+  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }].
+  filter((f) => needsAccount || f.type !== "password");
 
   const submit = async () => {
     setSubmitting(true);
@@ -91,16 +120,10 @@ export default function Apply() {
           eyebrow="Thank you"
           title="Thanks for applying!"
           description="Your details are with our volunteer team. We'll be in touch soon." />
-        
+
       </div>);
 
   }
-
-  const fields = [
-    { k: "name", label: "Full name *", type: "text", ph: "Your full name" },
-    { k: "email_id", label: "Email *", type: "email", ph: "your@email.com" },
-    { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx" },
-    { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney" }];
 
   return (
     <div className="min-h-screen">
@@ -109,7 +132,12 @@ export default function Apply() {
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
             <ArrowLeft className="h-4 w-4" /> Back to home
           </Link>
-          <span className="text-sm text-muted-foreground">Volunteer registration</span>
+          <span className="text-sm text-muted-foreground">
+            {needsAccount ?
+            <>Volunteer registration · <Link to="/portal" className="text-primary underline underline-offset-4">Already registered? Log in</Link></> :
+            <>Signed in as <span className="text-foreground">{form.email_id}</span></>
+            }
+          </span>
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-6 py-12 md:py-16">
@@ -130,14 +158,15 @@ export default function Apply() {
                 {step === 0 &&
                 <div className="space-y-5">
                     <div className="grid gap-5 sm:grid-cols-2">
-                      {fields.map((f) =>
+                      {aboutFields.map((f) =>
                     <div key={f.k}>
                           <label className="mb-2 block text-sm font-medium text-foreground">{f.label}</label>
                           <input
                         type={f.type}
+                        autoComplete={f.type === "password" ? "new-password" : undefined}
                         placeholder={f.ph}
-                        value={form[f.k]}
-                        onChange={(e) => set(f.k, e.target.value)}
+                        value={f.value}
+                        onChange={(e) => f.onChange(e.target.value)}
                         className="w-full rounded-[var(--radius)] border border-border bg-background px-4 py-3 text-[15px] outline-none transition-colors focus:border-primary" />
 
                         </div>
@@ -148,6 +177,11 @@ export default function Apply() {
                     fileName={resume.name}
                     onChange={(url, name) => setResume({ url, name })} />
 
+                    {needsAccount &&
+                  <p className="text-sm text-muted-foreground">
+                        You'll use this email and password to sign in to your volunteer portal.
+                      </p>
+                  }
                   </div>
                 }
 
@@ -177,6 +211,10 @@ export default function Apply() {
                     </div>
                   </div>
                 }
+
+                {step === 3 && needsAccount &&
+                <AccountStep email={form.email_id.trim()} password={password} onVerified={submit} />
+                }
               </motion.div>
             </AnimatePresence>
 
@@ -191,11 +229,11 @@ export default function Apply() {
 
                 Back
               </button>
-              {step < 2 ?
+              {step < lastStep ?
               <button type="button" disabled={!canContinue} onClick={() => setStep(step + 1)} className="ba-btn-primary">
                   Continue <ArrowRight className="h-4 w-4" />
                 </button> :
-
+              !needsAccount &&
               <button type="button" disabled={!canContinue || submitting} onClick={submit} className="ba-btn-primary">
                   {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   {submitting ? "Finding your match…" : "Submit application"}
