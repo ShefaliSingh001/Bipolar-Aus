@@ -120,7 +120,10 @@ export default function Apply() {
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
             <ArrowLeft className="h-4 w-4" /> Back to home
           </Link>
-          <span className="text-sm text-muted-foreground">Volunteer registration</span>
+          <span className="text-sm text-muted-foreground">
+            Volunteer registration ·{" "}
+            <Link to="/login" className="text-primary underline underline-offset-4">Already registered? Log in</Link>
+          </span>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-6 py-16">
