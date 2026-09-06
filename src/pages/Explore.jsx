@@ -5,6 +5,8 @@ import Sydney3DMap from "@/components/explore/Sydney3DMap";
 import LandmarkPopover from "@/components/explore/LandmarkPopover";
 import AddCreationForm from "@/components/explore/AddCreationForm";
 import useSydneyMap from "@/hooks/useSydneyMap";
+import { Link } from "react-router-dom";
+import { Palette } from "lucide-react";
 
 export default function Explore() {
   const map = useSydneyMap();
@@ -50,6 +52,14 @@ export default function Explore() {
         eyebrow="Explore"
         title="An illustrated Sydney, made by our community."
         description="Tap a place on the map to see the artworks, stories, photos and poems our community has made there — and add your own."
+        actions={
+          <Link
+            to={map.selected ? `/studio/create?landmark=${map.selected.id}` : "/studio"}
+            className="ba-btn-primary"
+          >
+            <Palette className="h-4 w-4" /> Add an artwork
+          </Link>
+        }
       />
       <main className="mx-auto max-w-6xl px-6 py-14">
         <Sydney3DMap
