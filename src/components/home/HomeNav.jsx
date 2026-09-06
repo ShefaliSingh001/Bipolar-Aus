@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import BrandLogo from "@/components/brand/BrandLogo";
 import { base44 } from "@/api/base44Client";
+import signOut from "@/lib/signOut";
 
 export default function HomeNav() {
   const [email, setEmail] = useState(null);
@@ -18,16 +19,19 @@ export default function HomeNav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <BrandLogo />
         <div className="flex items-center gap-7">
-          <Link to="/#about" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">About</Link>
           <Link to="/community" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Community</Link>
           <Link to="/studio" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Art Studio</Link>
-          <Link to="/explore" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Explore</Link>
           <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">My portal</Link>
           <Link to="/admin-auth" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Admin portal</Link>
           {email && (
-            <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary lg:block">
-              Signed in as <span className="text-foreground">{email}</span>
-            </Link>
+            <>
+              <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary lg:block">
+                Signed in as <span className="text-foreground">{email}</span>
+              </Link>
+              <button type="button" onClick={() => signOut("/")} className="text-sm text-muted-foreground transition-colors hover:text-primary">
+                Log out
+              </button>
+            </>
           )}
           <Link to="/apply" className="ba-btn-primary px-5 py-2.5">
             Volunteer Now <ArrowRight className="h-4 w-4" />
