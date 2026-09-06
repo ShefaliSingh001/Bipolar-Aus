@@ -90,6 +90,9 @@ export default function VolunteerPortal() {
         description={application?.role_title ? `Matched role: ${application.role_title}` : "Your coordinator is finalising your role match."}
         actions={
           <>
+            <span className="text-sm text-muted-foreground">
+              Signed in as <span className="text-foreground">{user?.email}</span>
+            </span>
             <StatusPill status={volunteer.status} />
             {application && <StatusPill status={application.status} />}
             <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary">
