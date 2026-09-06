@@ -60,10 +60,18 @@
 
 @layer components {
   .ba-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-secondary disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all duration-300 hover:bg-secondary hover:scale-[1.03] disabled:opacity-50 disabled:pointer-events-none;
   }
   .ba-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-transparent px-6 py-3 text-sm font-medium text-primary transition-all duration-300 hover:bg-muted disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-transparent px-6 py-3 text-sm font-medium text-primary transition-all duration-300 hover:bg-muted hover:scale-[1.03] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .ba-btn-primary svg,
+  .ba-btn-secondary svg {
+    @apply transition-transform duration-300;
+  }
+  .ba-btn-primary:hover svg,
+  .ba-btn-secondary:hover svg {
+    transform: translateX(4px);
   }
   .brand-btn-accent {
     @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-all duration-300 hover:brightness-95;

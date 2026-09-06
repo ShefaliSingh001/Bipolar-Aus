@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import StatusPill from "@/components/brand/StatusPill";
+import ApplicationTopMatches from "@/components/admin/ApplicationTopMatches";
 
 export default function ApplicationsTab() {
   const [apps, setApps] = useState([]);
@@ -74,6 +75,7 @@ export default function ApplicationsTab() {
                   <button className="brand-btn-destructive" onClick={() => decide(a, "rejected")}>Reject</button>
                 </div>
                 {notice?.id === a.id && <p className="mt-4 text-sm text-muted-foreground">{notice.text}</p>}
+                {a.volunteer_id && <ApplicationTopMatches volunteerId={a.volunteer_id} />}
               </div>
             )}
           </div>
