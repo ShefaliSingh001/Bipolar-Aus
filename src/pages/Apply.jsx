@@ -25,7 +25,14 @@ export default function Apply() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then((authed) => setNeedsAccount(!authed));
+    base44.auth.isAuthenticated().then(async (authed) => {
+      setNeedsAccount(!authed);
+      if (authed) {
+        const me = await base44.auth.me();
+        setForm((f) => ({ ...f, name: me?.full_name || f.name, email_id: me?.email || f.email_id }));
+        setStep(1);
+      }
+    });
   }, []);
 
   const STEPS = needsAccount ? [...BASE_STEPS, "Confirm your email"] : BASE_STEPS;
@@ -45,7 +52,8 @@ export default function Apply() {
   { k: "password", label: "Password *", type: "password", ph: "At least 8 characters", value: password, onChange: setPassword },
   { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword },
   { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
-  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }];
+  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }].
+  filter((f) => needsAccount || f.type !== "password");
 
   const submit = async () => {
     setSubmitting(true);
@@ -121,8 +129,10 @@ export default function Apply() {
             <ArrowLeft className="h-4 w-4" /> Back to home
           </Link>
           <span className="text-sm text-muted-foreground">
-            Volunteer registration ·{" "}
-            <Link to="/login" className="text-primary underline underline-offset-4">Already registered? Log in</Link>
+            {needsAccount ?
+            <>Volunteer registration · <Link to="/portal" className="text-primary underline underline-offset-4">Already registered? Log in</Link></> :
+            <>Signed in as <span className="text-foreground">{form.email_id}</span></>
+            }
           </span>
         </div>
       </header>
@@ -158,9 +168,11 @@ export default function Apply() {
                 
                   </div>
               )}
-                <p className="text-sm text-muted-foreground">
-                  You'll use this email and password to sign in to your volunteer portal.
-                </p>
+                {needsAccount &&
+              <p className="text-sm text-muted-foreground">
+                    You'll use this email and password to sign in to your volunteer portal.
+                  </p>
+              }
               </div>
             }
 
