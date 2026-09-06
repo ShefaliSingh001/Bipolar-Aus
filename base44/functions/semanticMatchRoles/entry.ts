@@ -1,12 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
-
-function norm(s) {
-  return String(s || '').toLowerCase().trim();
-}
+import { norm, availabilityDays } from '../../shared/matching.ts';
 
 function ruleBased(volunteer, roles) {
   const vSkills = (volunteer.skills || []).map(norm);
-  const vDays = (volunteer.availability_slots || []).map((s) => norm(s.day));
+  const vDays = availabilityDays(volunteer);
   return roles
     .map((role) => {
       const req = (role.required_skills || []).map(norm);

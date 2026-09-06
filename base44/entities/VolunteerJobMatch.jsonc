@@ -1,0 +1,101 @@
+{
+  "name": "VolunteerJobMatch",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "job_role_id": {
+      "type": "string"
+    },
+    "job_role_title": {
+      "type": "string"
+    },
+    "overall_match_score": {
+      "type": "number"
+    },
+    "match_category": {
+      "type": "string",
+      "enum": [
+        "strong",
+        "good",
+        "moderate",
+        "weak"
+      ]
+    },
+    "rank": {
+      "type": "number"
+    },
+    "skills_score": {
+      "type": "number"
+    },
+    "semantic_score": {
+      "type": "number"
+    },
+    "experience_score": {
+      "type": "number"
+    },
+    "availability_score": {
+      "type": "number"
+    },
+    "location_score": {
+      "type": "number"
+    },
+    "interests_score": {
+      "type": "number"
+    },
+    "qualifications_score": {
+      "type": "number"
+    },
+    "ai_explanation": {
+      "type": "string"
+    },
+    "supporting_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missing_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendation_status": {
+      "type": "string",
+      "enum": [
+        "recommended",
+        "approved",
+        "not_selected",
+        "rejected",
+        "info_requested"
+      ],
+      "default": "recommended"
+    },
+    "admin_decision": {
+      "type": "string"
+    },
+    "admin_notes": {
+      "type": "string"
+    },
+    "decision_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cycle_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "job_role_id"
+  ]
+}
