@@ -67,8 +67,8 @@ const AuthenticatedApp = () => {
         <Route path="/studio/create" element={<CreateProject />} />
         <Route path="/studio/:id" element={<ProjectRoom />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/studio/impact" element={<MyImpact />} />
           <Route path="/studio/profile" element={<StudioProfile />} />
         </Route>
