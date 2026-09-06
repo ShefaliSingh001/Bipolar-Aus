@@ -56,13 +56,13 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/apply" element={<Apply />} />
+      <Route path="/portal" element={<VolunteerPortal />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/" element={<Home />} />
         <Route path="/volunteer" element={<Apply />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin-auth" element={<AdminAuth />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/portal" element={<VolunteerPortal />} />
         <Route path="/community" element={<Community />} />
         <Route path="/studio" element={<Studio />} />
         <Route path="/studio/create" element={<CreateProject />} />

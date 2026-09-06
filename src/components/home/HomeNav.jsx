@@ -14,7 +14,6 @@ export default function HomeNav() {
           <Link to="/studio" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary sm:block">Art Studio</Link>
           <Link to="/explore" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">Explore</Link>
           <Link to="/portal" className="hidden text-sm text-muted-foreground transition-colors hover:text-primary md:block">My portal</Link>
-          <Link to="/login" className="text-sm text-muted-foreground transition-colors hover:text-primary">Log in</Link>
           <Link to="/apply" className="ba-btn-primary px-5 py-2.5">
             Volunteer Now <ArrowRight className="h-4 w-4" />
           </Link>

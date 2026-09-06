@@ -7,6 +7,7 @@ import TaskCard from "@/components/portal/TaskCard";
 import OnboardingChecklist from "@/components/portal/OnboardingChecklist";
 import CertificateCard from "@/components/portal/CertificateCard";
 import ApprovalNotice from "@/components/portal/ApprovalNotice";
+import PortalLogin from "@/components/portal/PortalLogin";
 
 export default function VolunteerPortal() {
   const [loading, setLoading] = useState(true);
@@ -16,8 +17,14 @@ export default function VolunteerPortal() {
   const [onboarding, setOnboarding] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [role, setRole] = useState(null);
+  const [authed, setAuthed] = useState(true);
 
   const load = async () => {
+    if (!(await base44.auth.isAuthenticated())) {
+      setAuthed(false);
+      setLoading(false);
+      return;
+    }
     const me = await base44.auth.me();
     setUser(me);
     const vols = await base44.entities.Volunteer.filter({ email_id: me.email });
@@ -58,6 +65,8 @@ export default function VolunteerPortal() {
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading your portal…</div>;
   }
+
+  if (!authed) return <PortalLogin />;
 
   if (!volunteer) {
     return (
