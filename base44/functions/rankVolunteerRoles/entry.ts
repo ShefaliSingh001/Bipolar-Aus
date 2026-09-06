@@ -1,6 +1,19 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { norm, overlap, availabilityDays } from '../../shared/matching.ts';
 
+// Fast local semantic proxy: weighted token overlap between the resume/profile text
+// and the role text. Avoids an extra LLM round-trip for every role.
+function semanticProxy(volunteer, profile, role) {
+  const tokens = (t) => new Set(norm(t).split(/[^a-z0-9+]+/).filter((w) => w.length > 3));
+  const vText = [profile.resume_text, (profile.skills || []).join(' '), (volunteer.skills || []).join(' '), (profile.interests || []).join(' ')].join(' ');
+  const v = tokens(vText);
+  const r = tokens(role.title + ' ' + (role.description || '') + ' ' + (role.required_skills || []).join(' '));
+  if (!r.size) return 40;
+  let hits = 0;
+  r.forEach((w) => { if (v.has(w)) hits += 1; });
+  return Math.round(Math.min(1, (hits / r.size) * 1.4) * 100);
+}
+
 function category(score) {
   if (score >= 85) return 'strong';
   if (score >= 70) return 'good';
@@ -98,32 +111,9 @@ export default async function (req: Request): Promise<Response> {
       }
     }
 
-    // 2. Semantic relevance per role, in one grounded call.
-    let semanticById = {};
-    try {
-      const sem = await base44.asServiceRole.integrations.Core.InvokeLLM({
-        prompt:
-          'Rate how semantically relevant each volunteer role is to this volunteer, 0-100. Judge ONLY from the evidence given; never assume unstated experience.\n\n' +
-          'Volunteer profile: ' + JSON.stringify({ skills: volunteer.skills, availability: volunteer.availability, ...profile }).slice(0, 12000) + '\n\n' +
-          'Roles: ' + JSON.stringify(roles.map((r) => ({ id: r.id, title: r.title, description: r.description, required_skills: r.required_skills }))),
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            scores: {
-              type: 'array',
-              items: { type: 'object', properties: { role_id: { type: 'string' }, semantic_score: { type: 'number' } } },
-            },
-          },
-        },
-      });
-      ((sem && sem.scores) || []).forEach((s) => { semanticById[s.role_id] = s.semantic_score; });
-    } catch (_e) {
-      semanticById = {};
-    }
-
-    // 3. Score, rank all, take top 3.
+    // 2 + 3. Score every role locally (no LLM round-trip), rank, take top 3.
     const ranked = roles
-      .map((r) => scoreRole(volunteer, profile, r, semanticById[r.id]))
+      .map((r) => scoreRole(volunteer, profile, r, semanticProxy(volunteer, profile, r)))
       .sort((a, b) => b.overall_match_score - a.overall_match_score);
     const top3 = ranked.slice(0, 3).map((m, i) => ({ ...m, rank: i + 1 }));
 
@@ -131,10 +121,11 @@ export default async function (req: Request): Promise<Response> {
     let explanations = {};
     try {
       const exp = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        model: 'gemini_3_flash',
         prompt:
           'You explain volunteer-role matches to an administrator. Use ONLY the resume content below as evidence. ' +
           'If a role requirement is not evidenced in the resume, list it under missing_requirements and state it was "not identified in the resume". Never invent experience, skills, qualifications or achievements.\n\n' +
-          'Resume content: ' + String(profile.resume_text || '(no resume text available)').slice(0, 15000) + '\n' +
+          'Resume content: ' + String(profile.resume_text || '(no resume text available)').slice(0, 6000) + '\n' +
           'Stated volunteer skills: ' + JSON.stringify(volunteer.skills || []) + '\n' +
           'Availability: ' + JSON.stringify({ availability: volunteer.availability, slots: volunteer.availability_slots, weekly_hours: volunteer.total_weekly_hours }) + '\n\n' +
           'Roles to explain: ' + JSON.stringify(top3.map((m) => {
