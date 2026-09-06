@@ -8,7 +8,7 @@ const R = 12; // island radius
 const TAG_BASE =
   "pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-semibold shadow-md transition-colors duration-200 ";
 
-export default function Sydney3DMap({ landmarks, selectedId, hoveredId, setHoveredId, onSelect, counts = {} }) {
+export default function Sydney3DMap({ landmarks, selectedId, hoveredId, setHoveredId, onSelect, counts = {}, panel, footer }) {
   const mountRef = useRef(null);
   const labelsRef = useRef(null);
   const propsRef = useRef({});
@@ -170,7 +170,13 @@ export default function Sydney3DMap({ landmarks, selectedId, hoveredId, setHover
           <Compass className="h-4 w-4 text-primary" />
           Drag to look around · Scroll to zoom · Click a name tag
         </div>
+        {panel}
       </div>
+      {footer && (
+        <div className="border-t border-border bg-background px-6 py-4 text-center text-sm text-muted-foreground">
+          {footer}
+        </div>
+      )}
     </div>
   );
 }
