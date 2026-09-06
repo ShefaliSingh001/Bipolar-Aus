@@ -53,7 +53,7 @@ export default function CanvasStudio({ project, setProject, authorName, canEdit 
         />
       </div>
       {!canEdit && (
-        <p className="mt-3 text-sm text-muted-foreground">Join this project to draw on the shared canvas.</p>
+        <p className="mt-3 text-sm text-muted-foreground">This artwork is published, so the canvas is now read-only.</p>
       )}
     </section>
   );

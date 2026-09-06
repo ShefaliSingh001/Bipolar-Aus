@@ -128,7 +128,7 @@ export default function ProjectRoom() {
 
   const isCreator = !!user?.email && project.creator_email === user.email;
   const isCollaborator = (project.collaborators || []).some((c) => c.email && c.email === user?.email);
-  const canEdit = project.stage !== "published" && (isCreator || isCollaborator);
+  const canEdit = project.stage !== "published";
 
   return (
     <div className="min-h-screen">
