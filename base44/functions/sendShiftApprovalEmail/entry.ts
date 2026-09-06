@@ -4,9 +4,8 @@ import { createMimeMessage } from 'npm:mimetext@3.0.24';
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
+    let user = null;
+    try { user = await base44.auth.me(); } catch (_e) { user = null; }
 
     const { application_id } = await req.json();
     if (!application_id) return Response.json({ error: 'application_id is required' }, { status: 400 });
@@ -51,8 +50,14 @@ export default async function(req) {
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');
 
+    const profileRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const senderAddr = profileRes.ok ? (await profileRes.json()).email : user?.email;
+    if (!senderAddr) return Response.json({ error: 'Could not resolve a sender address' }, { status: 502 });
+
     const msg = createMimeMessage();
-    msg.setSender({ name: 'Bipolar Australia Volunteer Team', addr: user.email });
+    msg.setSender({ name: 'Bipolar Australia Volunteer Team', addr: senderAddr });
     msg.setRecipient(app.volunteer_email);
     msg.setSubject(`Your volunteer shift is approved — ${app.role_title || role?.title || 'Bipolar Australia'}`);
     msg.addMessage({ contentType: 'text/plain', data: lines.join('\n') });
