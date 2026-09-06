@@ -44,32 +44,31 @@ export default function VolunteerImpact() {
           <h2 className="max-w-xl font-heading text-3xl leading-tight md:text-[40px]">
             What volunteers have actually achieved
           </h2>
-        </Reveal>
 
-        <div className="mt-14">
-          {achievements.map((a, i) => (
-            <Reveal key={a.figure} delay={i * 0.12}>
-              <div className="grid gap-3 py-9 md:grid-cols-[0.45fr_1fr] md:gap-10">
+          <div className="mt-14">
+            {achievements.map((a) => (
+              <div key={a.figure} className="grid gap-3 py-9 md:grid-cols-[0.45fr_1fr] md:gap-10">
                 <div>
                   <CountUpFigure value={a.figure} className="font-heading text-[38px] leading-none text-primary md:text-[46px]" />
                   <p className="mt-2 text-sm text-muted-foreground">{a.sub}</p>
                 </div>
                 <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground">{a.note}</p>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {columns.map((c, i) => (
-            <Reveal key={c.title} delay={i * 0.14}>
-              <div className="h-full rounded-[var(--radius)] border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {columns.map((c) => (
+              <div
+                key={c.title}
+                className="h-full rounded-[var(--radius)] border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40"
+              >
                 <h3 className="font-heading text-xl leading-snug">{c.title}</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">{c.note}</p>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -17,18 +17,16 @@ export default function WhyBipolarAustralia() {
           We are Australia's national peak not-for-profit organisation for bipolar disorder — independent,
           lived-experience led, and trusted by the people and services we work with.
         </p>
-      </Reveal>
 
-      <div className="mt-12 border-t border-border">
-        {pillars.map((p, i) => (
-          <Reveal key={p.title} delay={i * 0.1}>
-            <div className="grid gap-2 border-b border-border py-7 md:grid-cols-[0.35fr_1fr] md:gap-10">
+        <div className="mt-12 border-t border-border">
+          {pillars.map((p) => (
+            <div key={p.title} className="grid gap-2 border-b border-border py-7 md:grid-cols-[0.35fr_1fr] md:gap-10">
               <h3 className="font-body text-[15px] font-medium text-foreground">{p.title}</h3>
               <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground">{p.note}</p>
             </div>
-          </Reveal>
-        ))}
-      </div>
+          ))}
+        </div>
+      </Reveal>
     </section>
   );
 }
