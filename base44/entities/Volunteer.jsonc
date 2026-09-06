@@ -11,6 +11,10 @@
     "phone": {
       "type": "string"
     },
+    "resume": {
+      "type": "string",
+      "description": "URL of the uploaded resume file (PDF or DOCX)"
+    },
     "availability": {
       "type": "string",
       "enum": [
