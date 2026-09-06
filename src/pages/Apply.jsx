@@ -42,10 +42,8 @@ export default function Apply() {
   const aboutFields = [
   { k: "name", label: "Full name *", type: "text", ph: "Your full name", value: form.name, onChange: (v) => set("name", v) },
   { k: "email_id", label: "Email *", type: "email", ph: "your@email.com", value: form.email_id, onChange: (v) => set("email_id", v) },
-  ...needsAccount ? [
   { k: "password", label: "Password *", type: "password", ph: "At least 8 characters", value: password, onChange: setPassword },
-  { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword }] :
-  [],
+  { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword },
   { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
   { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }];
 
@@ -157,11 +155,9 @@ export default function Apply() {
                 
                   </div>
               )}
-                {needsAccount &&
-              <p className="text-sm text-muted-foreground">
-                    You'll use this email and password to sign in to your volunteer portal.
-                  </p>
-              }
+                <p className="text-sm text-muted-foreground">
+                  You'll use this email and password to sign in to your volunteer portal.
+                </p>
               </div>
             }
 
