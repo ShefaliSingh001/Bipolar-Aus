@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
@@ -7,11 +7,13 @@ import AvailabilityPicker from "@/components/apply/AvailabilityPicker";
 import { volunteerSkills } from "@/lib/creativeSkills";
 import { Link } from "react-router-dom";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import AccountStep from "@/components/apply/AccountStep";
 
-const STEPS = ["About you", "Your skills", "Your availability"];
+const BASE_STEPS = ["About you", "Your skills", "Your availability"];
 
 export default function Apply() {
   const [step, setStep] = useState(0);
+  const [needsAccount, setNeedsAccount] = useState(false);
   const [form, setForm] = useState({ name: "", email_id: "", phone: "", preferred_area: "" });
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
@@ -19,6 +21,13 @@ export default function Apply() {
   const [submitting, setSubmitting] = useState(false);
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then((authed) => setNeedsAccount(!authed));
+  }, []);
+
+  const STEPS = needsAccount ? [...BASE_STEPS, "Create your account"] : BASE_STEPS;
+  const lastStep = STEPS.length - 1;
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleSkill = (s) => setSkills((p) => p.includes(s) ? p.filter((x) => x !== s) : [...p, s]);
@@ -150,6 +159,10 @@ export default function Apply() {
               </div>
             }
 
+            {step === 3 && needsAccount &&
+            <AccountStep email={form.email_id.trim()} onVerified={submit} />
+            }
+
             {step === 2 &&
             <div className="space-y-8">
                 <AvailabilityPicker slots={slots} onChange={setSlots} />
@@ -181,11 +194,11 @@ export default function Apply() {
             
             Back
           </button>
-          {step < 2 ?
+          {step < lastStep ?
           <button type="button" disabled={!canContinue} onClick={() => setStep(step + 1)} className="ba-btn-primary">
               Continue <ArrowRight className="h-4 w-4" />
             </button> :
-
+          !needsAccount &&
           <button type="button" disabled={!canContinue || submitting} onClick={submit} className="ba-btn-primary">
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {submitting ? "Finding your match…" : "Submit application"}
