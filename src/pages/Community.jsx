@@ -50,14 +50,15 @@ export default function Community() {
 
         <section className="pb-20">
           <h2 className="font-heading text-3xl leading-tight md:text-[40px]">Find your place</h2>
-          <div className="mt-10 border-t border-border">
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
             {places.map((p, i) => (
-              <div key={p.title} className="grid gap-3 border-b border-border py-7 md:grid-cols-[0.35fr_1fr] md:gap-10">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-xs text-muted-foreground">0{i + 1}</span>
-                  <h3 className="font-heading text-2xl">{p.title}</h3>
-                </div>
-                <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground">{p.note}</p>
+              <div
+                key={p.title}
+                className="h-full rounded-[var(--radius)] border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40"
+              >
+                <span className="text-xs text-muted-foreground">0{i + 1}</span>
+                <h3 className="mt-2 font-heading text-2xl">{p.title}</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">{p.note}</p>
               </div>
             ))}
           </div>
