@@ -18,6 +18,8 @@ export default function Apply() {
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
   const [availability, setAvailability] = useState("flexible");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState("");
@@ -26,14 +28,26 @@ export default function Apply() {
     base44.auth.isAuthenticated().then((authed) => setNeedsAccount(!authed));
   }, []);
 
-  const STEPS = needsAccount ? [...BASE_STEPS, "Create your account"] : BASE_STEPS;
+  const STEPS = needsAccount ? [...BASE_STEPS, "Confirm your email"] : BASE_STEPS;
   const lastStep = STEPS.length - 1;
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleSkill = (s) => setSkills((p) => p.includes(s) ? p.filter((x) => x !== s) : [...p, s]);
 
+  const accountReady = !needsAccount || (password.length >= 8 && password === confirmPassword);
+
   const canContinue =
-  step === 0 ? form.name.trim() && form.email_id.trim() : step === 1 ? skills.length > 0 : slots.length > 0;
+  step === 0 ? form.name.trim() && form.email_id.trim() && accountReady : step === 1 ? skills.length > 0 : slots.length > 0;
+
+  const aboutFields = [
+  { k: "name", label: "Full name *", type: "text", ph: "Your full name", value: form.name, onChange: (v) => set("name", v) },
+  { k: "email_id", label: "Email *", type: "email", ph: "your@email.com", value: form.email_id, onChange: (v) => set("email_id", v) },
+  ...needsAccount ? [
+  { k: "password", label: "Password *", type: "password", ph: "At least 8 characters", value: password, onChange: setPassword },
+  { k: "confirm", label: "Confirm password *", type: "password", ph: "Re-enter your password", value: confirmPassword, onChange: setConfirmPassword }] :
+  [],
+  { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
+  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }];
 
   const submit = async () => {
     setSubmitting(true);
@@ -130,23 +144,24 @@ export default function Apply() {
             
             {step === 0 &&
             <div className="space-y-6">
-                {[
-              { k: "name", label: "Full name *", type: "text", ph: "Your full name" },
-              { k: "email_id", label: "Email *", type: "email", ph: "your@email.com" },
-              { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx" },
-              { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney" }].
-              map((f) =>
+                {aboutFields.map((f) =>
               <div key={f.k}>
                     <label className="mb-2 block text-sm font-medium text-foreground">{f.label}</label>
                     <input
                   type={f.type}
+                  autoComplete={f.type === "password" ? "new-password" : undefined}
                   placeholder={f.ph}
-                  value={form[f.k]}
-                  onChange={(e) => set(f.k, e.target.value)}
+                  value={f.value}
+                  onChange={(e) => f.onChange(e.target.value)}
                   className="w-full rounded-[var(--radius)] border border-border bg-card px-4 py-3 text-[15px] outline-none focus:border-primary/50" />
                 
                   </div>
               )}
+                {needsAccount &&
+              <p className="text-sm text-muted-foreground">
+                    You'll use this email and password to sign in to your volunteer portal.
+                  </p>
+              }
               </div>
             }
 
@@ -160,7 +175,7 @@ export default function Apply() {
             }
 
             {step === 3 && needsAccount &&
-            <AccountStep email={form.email_id.trim()} onVerified={submit} />
+            <AccountStep email={form.email_id.trim()} password={password} onVerified={submit} />
             }
 
             {step === 2 &&
