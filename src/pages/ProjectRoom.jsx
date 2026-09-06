@@ -9,6 +9,7 @@ import CollaboratorsPanel from "@/components/studio/CollaboratorsPanel";
 import ContributionTimeline from "@/components/studio/ContributionTimeline";
 import CommentsPanel from "@/components/studio/CommentsPanel";
 import ProjectRoomStatus from "@/components/studio/ProjectRoomStatus";
+import { getVolunteerSession } from "@/lib/volunteerSession";
 
 export default function ProjectRoom() {
   const { id } = useParams();
@@ -35,7 +36,12 @@ export default function ProjectRoom() {
   }, [id]);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
+    base44.auth.me()
+      .then(setUser)
+      .catch(() => {
+        const s = getVolunteerSession();
+        setUser(s ? { email: s.email, full_name: s.name } : null);
+      });
     load();
   }, [load]);
 

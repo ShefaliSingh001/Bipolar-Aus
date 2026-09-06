@@ -9,7 +9,7 @@ export function getVolunteerSession() {
 }
 
 export function setVolunteerSession(volunteer) {
-  localStorage.setItem(KEY, JSON.stringify({ id: volunteer.id, email: volunteer.email_id }));
+  localStorage.setItem(KEY, JSON.stringify({ id: volunteer.id, email: volunteer.email_id, name: volunteer.name }));
 }
 
 export function clearVolunteerSession() {
