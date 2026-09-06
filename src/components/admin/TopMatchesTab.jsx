@@ -19,7 +19,12 @@ export default function TopMatchesTab() {
   }, []);
 
   useEffect(() => {
-    base44.auth.me().then(setAdmin).catch(() => {});
+    try {
+      const raw = localStorage.getItem("admin_session");
+      if (raw) setAdmin(JSON.parse(raw));
+    } catch (_e) {
+      setAdmin(null);
+    }
     load();
   }, [load]);
 
@@ -39,7 +44,7 @@ export default function TopMatchesTab() {
             key={v.id}
             volunteer={v}
             matches={matches.filter((m) => m.volunteer_id === v.id && m.recommendation_status !== "archived")}
-            adminName={admin?.full_name || admin?.email || "Administrator"}
+            adminName={admin?.name || admin?.email || "Administrator"}
             onChanged={load}
           />
         ))}
