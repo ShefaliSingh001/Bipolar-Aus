@@ -6,6 +6,7 @@ import StatusPill from "@/components/brand/StatusPill";
 import TaskCard from "@/components/portal/TaskCard";
 import OnboardingChecklist from "@/components/portal/OnboardingChecklist";
 import CertificateCard from "@/components/portal/CertificateCard";
+import ApprovalNotice from "@/components/portal/ApprovalNotice";
 
 export default function VolunteerPortal() {
   const [loading, setLoading] = useState(true);
@@ -14,6 +15,7 @@ export default function VolunteerPortal() {
   const [application, setApplication] = useState(null);
   const [onboarding, setOnboarding] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [role, setRole] = useState(null);
 
   const load = async () => {
     const me = await base44.auth.me();
@@ -30,6 +32,10 @@ export default function VolunteerPortal() {
       setApplication(apps[0] || null);
       setOnboarding(onb[0] || null);
       setTasks(tsk);
+      if (apps[0]?.role_id) {
+        const roles = await base44.entities.JobRole.filter({ id: apps[0].role_id });
+        setRole(roles[0] || null);
+      }
     }
     setLoading(false);
   };
@@ -75,6 +81,11 @@ export default function VolunteerPortal() {
       <main className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-16 lg:grid-cols-[1.4fr_1fr]">
           <section>
+            {application?.status === "accepted" && (
+              <div className="mb-14">
+                <ApprovalNotice application={application} volunteer={volunteer} role={role} />
+              </div>
+            )}
             <h2 className="font-heading text-2xl">Your tasks</h2>
             {tasks.length === 0 ? (
               <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
