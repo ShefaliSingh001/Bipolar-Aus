@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import PageHeader from "@/components/brand/PageHeader";
 import SkillChips from "@/components/apply/SkillChips";
 import AvailabilityPicker from "@/components/apply/AvailabilityPicker";
+import ResumeUpload from "@/components/apply/ResumeUpload";
 import { volunteerSkills } from "@/lib/creativeSkills";
 import { Link } from "react-router-dom";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
@@ -13,6 +14,7 @@ const STEPS = ["About you", "Your skills", "Your availability"];
 export default function Apply() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ name: "", email_id: "", phone: "", preferred_area: "" });
+  const [resume, setResume] = useState({ url: "", name: "" });
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
   const [availability, setAvailability] = useState("flexible");
@@ -33,6 +35,7 @@ export default function Apply() {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Australia/Sydney";
     const payload = {
       ...form,
+      resume: resume.url || undefined,
       skills,
       availability,
       availability_slots: slots,
@@ -138,6 +141,11 @@ export default function Apply() {
                     />
                   </div>
                 ))}
+                <ResumeUpload
+                  value={resume.url}
+                  fileName={resume.name}
+                  onChange={(url, name) => setResume({ url, name })}
+                />
               </div>
             )}
 
