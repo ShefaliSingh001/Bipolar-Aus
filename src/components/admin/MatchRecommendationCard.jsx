@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MatchScoreGrid from "@/components/admin/MatchScoreGrid";
 
 const MEDALS = { 1: "🥇 Top Match", 2: "🥈 Second Match", 3: "🥉 Third Match" };
 
@@ -43,8 +42,6 @@ export default function MatchRecommendationCard({ match, decided, onApprove, app
 
       {open && (
         <div className="mt-6 space-y-6 border-t border-border pt-6">
-          <MatchScoreGrid match={match} />
-
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Why this role matches</p>
             <p className="mt-1.5 text-[15px] leading-relaxed">{match.ai_explanation || "—"}</p>
