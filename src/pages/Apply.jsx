@@ -9,7 +9,6 @@ import StepRail from "@/components/apply/StepRail";
 import { volunteerSkills } from "@/lib/creativeSkills";
 import { Link } from "react-router-dom";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
-import AccountStep from "@/components/apply/AccountStep";
 
 const BASE_STEPS = ["About you", "Your skills", "Your availability"];
 
@@ -38,7 +37,7 @@ export default function Apply() {
     });
   }, []);
 
-  const STEPS = needsAccount ? [...BASE_STEPS, "Confirm your email"] : BASE_STEPS;
+  const STEPS = BASE_STEPS;
   const lastStep = STEPS.length - 1;
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -61,6 +60,17 @@ export default function Apply() {
   const submit = async () => {
     setSubmitting(true);
     setError("");
+
+    if (needsAccount) {
+      try {
+        await base44.auth.register({ email: form.email_id.trim(), password });
+      } catch (e) {
+        setError(e?.message || "We couldn't create your account with that email.");
+        setSubmitting(false);
+        return;
+      }
+    }
+
     const totalHours = Math.round(slots.reduce((s, x) => s + (x.hours || 0), 0) * 10) / 10;
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Australia/Sydney";
     const payload = {
@@ -212,9 +222,6 @@ export default function Apply() {
                   </div>
                 }
 
-                {step === 3 && needsAccount &&
-                <AccountStep email={form.email_id.trim()} password={password} onVerified={submit} />
-                }
               </motion.div>
             </AnimatePresence>
 
@@ -233,7 +240,7 @@ export default function Apply() {
               <button type="button" disabled={!canContinue} onClick={() => setStep(step + 1)} className="ba-btn-primary">
                   Continue <ArrowRight className="h-4 w-4" />
                 </button> :
-              !needsAccount &&
+
               <button type="button" disabled={!canContinue || submitting} onClick={submit} className="ba-btn-primary">
                   {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   {submitting ? "Finding your match…" : "Submit application"}
