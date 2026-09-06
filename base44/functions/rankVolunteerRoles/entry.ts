@@ -74,10 +74,6 @@ function scoreRole(volunteer, profile, role, semantic) {
 export default async function (req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
-
     const body = await req.json().catch(() => ({}));
     const volunteerId = body.volunteer_id;
     if (!volunteerId) return Response.json({ error: 'volunteer_id is required' }, { status: 400 });
