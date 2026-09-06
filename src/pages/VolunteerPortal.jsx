@@ -74,6 +74,9 @@ export default function VolunteerPortal() {
         <PageHeader eyebrow="Volunteer portal" title="We can't find your volunteer profile yet." description={`We looked for a volunteer registered with ${user?.email}. Complete the short application and your portal will fill in.`} />
         <main className="mx-auto max-w-3xl px-6 py-14">
           <Link to="/apply" className="ba-btn-primary">Complete my application</Link>
+          <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary ml-3">
+            Log out
+          </button>
         </main>
       </div>
     );
@@ -85,7 +88,15 @@ export default function VolunteerPortal() {
         eyebrow="Volunteer portal"
         title={`Welcome back, ${volunteer.name.split(" ")[0]}.`}
         description={application?.role_title ? `Matched role: ${application.role_title}` : "Your coordinator is finalising your role match."}
-        actions={<><StatusPill status={volunteer.status} />{application && <StatusPill status={application.status} />}</>}
+        actions={
+          <>
+            <StatusPill status={volunteer.status} />
+            {application && <StatusPill status={application.status} />}
+            <button type="button" onClick={() => base44.auth.logout("/portal")} className="ba-btn-secondary">
+              Log out
+            </button>
+          </>
+        }
       />
       <main className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-16 lg:grid-cols-[1.4fr_1fr]">
