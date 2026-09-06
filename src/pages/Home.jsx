@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import HomeNav from "@/components/home/HomeNav";
-import Reveal from "@/components/brand/Reveal";
 import Hero from "@/components/home/Hero";
 import ImpactEditorial from "@/components/home/ImpactEditorial";
 import WhyBipolarAustralia from "@/components/home/WhyBipolarAustralia";
@@ -14,11 +13,11 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <HomeNav />
       <Hero />
-      <Reveal><ImpactEditorial /></Reveal>
-      <Reveal><WhyBipolarAustralia /></Reveal>
-      <Reveal><VolunteerImpact /></Reveal>
-      <Reveal><OurPartners /></Reveal>
-      <Reveal><FinalCTA /></Reveal>
+      <ImpactEditorial />
+      <WhyBipolarAustralia />
+      <VolunteerImpact />
+      <OurPartners />
+      <FinalCTA />
       <footer className="border-t border-border py-10">
         <div className="mx-auto max-w-6xl px-6 text-sm text-muted-foreground">
           <p>Recovery is possible · Hope is real · Support is available · You are not alone</p>

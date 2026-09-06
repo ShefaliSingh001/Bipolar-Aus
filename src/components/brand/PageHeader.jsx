@@ -1,17 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function PageHeader({ eyebrow, title, description, actions, backTo = "/", backLabel = "Back to home" }) {
   return (
     <header className="border-b border-border">
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto max-w-6xl px-6 pb-10 pt-10 md:pt-14"
-      >
+      <div className="mx-auto max-w-6xl px-6 pb-10 pt-10 md:pt-14">
         <Link to={backTo} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
           <ArrowLeft className="h-4 w-4" /> {backLabel}
         </Link>
@@ -27,7 +21,7 @@ export default function PageHeader({ eyebrow, title, description, actions, backT
           </div>
           {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
         </div>
-      </motion.div>
+      </div>
     </header>
   );
 }
