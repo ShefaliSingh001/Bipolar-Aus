@@ -16,6 +16,7 @@ export default function Apply() {
   const [step, setStep] = useState(0);
   const [needsAccount, setNeedsAccount] = useState(false);
   const [form, setForm] = useState({ name: "", email_id: "", phone: "", preferred_area: "" });
+  const [password, setPassword] = useState("");
   const [resume, setResume] = useState({ url: "", name: "" });
   const [skills, setSkills] = useState([]);
   const [slots, setSlots] = useState([]);
@@ -42,13 +43,14 @@ export default function Apply() {
   const toggleSkill = (s) => setSkills((p) => p.includes(s) ? p.filter((x) => x !== s) : [...p, s]);
 
   const canContinue =
-  step === 0 ? form.name.trim() && form.email_id.trim() : step === 1 ? skills.length > 0 : slots.length > 0;
+  step === 0 ? form.name.trim() && form.email_id.trim() && (!needsAccount || password.length >= 6) : step === 1 ? skills.length > 0 : slots.length > 0;
 
   const aboutFields = [
   { k: "name", label: "Full name *", type: "text", ph: "Your full name", value: form.name, onChange: (v) => set("name", v) },
   { k: "email_id", label: "Email *", type: "email", ph: "your@email.com", value: form.email_id, onChange: (v) => set("email_id", v) },
   { k: "phone", label: "Phone", type: "tel", ph: "+61 4xx xxx xxx", value: form.phone, onChange: (v) => set("phone", v) },
-  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) }];
+  { k: "preferred_area", label: "Preferred area or suburb", type: "text", ph: "e.g. Inner West, Sydney", value: form.preferred_area, onChange: (v) => set("preferred_area", v) },
+  ...needsAccount ? [{ k: "password", label: "Create a password *", type: "password", ph: "At least 6 characters", value: password, onChange: setPassword }] : []];
 
   const submit = async () => {
     setSubmitting(true);
@@ -71,6 +73,19 @@ export default function Apply() {
       registered_at: new Date().toISOString(),
       status: "new"
     };
+
+    if (needsAccount) {
+      try {
+        await base44.auth.register({ email: form.email_id.trim(), password });
+      } catch (e) {
+        const msg = String(e?.message || "");
+        if (!/already/i.test(msg)) {
+          setError(msg || "We couldn't create your account. Please try again.");
+          setSubmitting(false);
+          return;
+        }
+      }
+    }
 
     let result = { matches: [] };
     try {
